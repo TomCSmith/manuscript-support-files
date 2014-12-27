@@ -1,0 +1,24 @@
+rm(list=ls())
+detach()
+
+[1] "MayflyDensity"  "TadpoleDensity" "BdTx"           "GosnerStage"   
+[5] "TadWt"          "BL"             "TMW"            "TMH"    
+
+Tadpole<-read.csv("C:\\Users\\thsmith\\Desktop\\Summer 2010\\TadpoleSizeByTx.csv")
+attach(Tadpole)
+str(Tadpole)
+names(Tadpole)  
+MayflyDensityF<-as.factor(MayflyDensity)
+TadpoleDensityF<-as.factor(TadpoleDensity)
+
+plot(BdTx[S3], TadWt[S3])
+
+S3<-which(SampleDate=="8/15/2010" | SampleDate=="8/16/2010")
+
+TadBL.aov<-aov(TadWt~BdTx)
+summary(TadBL.aov)
+
+library(nlme)
+TadBL.lm2<-lme(BL ~ BdExposure, random = ~1|MeasuredBy/AnimalID, data=TadBL)
+TadBL.lm2
+summary(TadBL.lm2)

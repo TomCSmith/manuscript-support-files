@@ -1,0 +1,45 @@
+rm(list=ls())
+detach()
+
+MFLM<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\MFLengthMass17Mar10.csv", header=T)
+attach(MFLM)
+names(MFLM)
+MFLM$LakeName<-as.factor(LakeID)
+MFLM$CageID<-as.factor(Cage.)
+plot(MFLength, AFDM)
+plot(Cage.,AFDM)
+plot(LakeName, AFDM)
+plot(GenusSpp, AFDM)
+plot(SampleDate, AFDM)
+plot(GenusSpp, MFLength)
+
+levels(SampleDate)
+[1] "1-Aug-09"  "12-Aug-09" "12-Sep-09" "15-Jul-09" "20-Jul-09" "20-Sep-09"
+[7] "21-Sep-09" "24-Aug-09" "31-Aug-09"
+levels(LakeName)
+levels(GenusSpp)
+
+S1<-which(SampleDate=="15-Jul-09" | SampleDate=="20-Jul-09")
+S2<-which(SampleDate=="1-Aug-09" | SampleDate=="12-Aug-09")
+S3<-which(SampleDate=="24-Aug-09" | SampleDate=="31-Aug-09")
+S4<-which(SampleDate=="12-Sep-09" | SampleDate=="20-Sep-09" | SampleDate=="21-Sep-09")
+LC<-which(LakeName=="10102")
+Sp<-which(LakeName=="10475")
+C0<-which(Cage.==0)
+Cage<-which(Cage.!=0)
+Ca<-which(GenusSpp=="Callibaetis spp.")
+Am<-which(GenusSpp=="Ameletus spp.")
+Sp.S4<-which(LakeID==10475 & (SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+LC.S4<-which(LakeID==10102 & (SampleDate=="12-Sep-09"))
+
+
+plot(CageID[LC.S4], AFDM[LC.S4])
+par(mfrow=c(2,1))
+plot(CageID[Sp.S4][-which(AFDM[Sp.S4]==.0084)], AFDM[Sp.S4][-which(AFDM[Sp.S4]==.0084)])
+
+max(AFDM[Sp.S4])
+(mxSpS4<-which(AFDM[Sp.S4]==.0084))
+
+par(mfrow=c(2,1))
+plot(CageID[LC], MFLength[LC])
+plot(CageID[Sp], MFLength[Sp])

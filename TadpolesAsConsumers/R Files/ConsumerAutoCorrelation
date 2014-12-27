@@ -1,0 +1,130 @@
+detach()
+(list=ls())
+
+
+LargeCR<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+LargeCR<-read.csv("H:\\Consumer-Resource Experiment 2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+names(LargeCR)
+str(LargeCR)
+attach(LargeCR)
+
+data.frame':   240 obs. of  34 variables:
+ $ LakeID          : int  10102 10102 10102 10102 10102 10102 10102 10102 10102 10102 ...
+ $ LakeName        : Factor w/ 2 levels "LeConte","Spur": 1 1 1 1 1 1 1 1 1 1 ...
+ $ SampleDate      : Factor w/ 8 levels "1-Sep-09","12-Sep-09",..: 4 4 4 4 4 4 4 4 4 4 ...
+ $ SampleNumber    : Factor w/ 4 levels "S1","S2","S3",..: 1 1 1 1 1 1 1 1 1 1 ...
+ $ CageOrder.      : num  1 2 3 4 5 6 7 8 9 10 ...
+ $ CageID          : Factor w/ 36 levels "1","10","11",..: 1 10 11 12 13 14 15 16 17 2 ...
+ $ EpiAFDM         : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ SamplePeriod    : int  NA NA NA NA NA NA NA NA NA NA ...
+ $ EpiWtperM.2     : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ EpiGroRate      : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ EGRperM.2       : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ CtrlDiff        : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ TadDens         : int  20 2 2 0 0 20 2 10 20 20 ...
+ $ TotTadWtMsrdCage: num  85.1 6.9 6.4 0 0 73.3 5.7 35.7 74.6 67.7 ...
+ $ TadWtStart      : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ TadWtEnd        : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ TadWtChange     : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ MFCount         : int  125 125 0 125 250 25 25 125 0 250 ...
+ $ MFDens          : int  125 125 0 125 250 25 25 125 0 250 ...
+ $ MFDensChg       : int  0 0 0 0 0 0 0 0 0 0 ...
+ $ MFPropChg       : num  0 0 0 0 0 0 0 0 0 0 ...
+ $ MFBiomassStart  : num  0.406 0.406 0 0.406 0.813 ...
+ $ MFBiomassEnd    : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ MFBiomassChange : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ meanSampleTemp  : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ totalSampleTemp : num  NA NA NA NA NA NA NA NA NA NA ...
+ $ light           : int  1950 1950 1950 1950 1950 1950 1970 1970 1970 1970 ...
+ $ PctBoulder      : num  75 0 0 37.5 100 100 0 50 50 37.5 ...
+ $ PctCobble       : num  25 0 0 0 0 0 50 25 0 25 ...
+ $ PctGravel       : num  0 0 0 0 0 0 0 0 25 37.5 ...
+ $ PctSand         : num  0 0 0 0 0 0 0 0 25 0 ...
+ $ PctSilt         : num  0 100 100 62.5 0 0 0 0 0 0 ...
+ $ PctBedrock      : int  0 0 0 0 0 0 50 25 0 0 ...
+ $ elevation       : int  3213 3213 3213 3213 3213 3213 3213 3213 3213 3213 ...
+>
+> 
+LC<-which(LakeID=="10102")
+Sp<-which(LakeID=="10475")
+length(LC)
+length(Sp)
+
+######AutoCorrelation in Tads
+
+
+##in EndWts
+(IndTadWt.LC<-TadWtEnd[LC]/TadDens[LC])
+(IndTadWt.Sp<-TadWtEnd[Sp]/TadDens[Sp])
+plot(TadDens[LC], IndTadWt.LC, ylim=c(.25,4))
+points(TadDens[Sp], IndTadWt.Sp, col=4)
+IndTadWtDensLC.lm<-lm(IndTadWt.LC~TadDens[LC])
+IndTadWtDensLC.aov<-aov(IndTadWt.LC~TadDens[LC])
+summary(IndTadWtDensLC.lm)
+summary(IndTadWtDensLC.aov)
+
+IndTadWtDensSp.lm<-lm(IndTadWt.Sp~TadDens[Sp])
+summary(IndTadWtDensSp.lm)
+IndTadWtDensSp.aov<-aov(IndTadWt.Sp~TadDens[Sp])
+summary(IndTadWtDensSp.aov)
+
+##in TadWtChange
+(IndTadWtChg.LC<-TadWtChange[LC]/TadDens[LC])
+(IndTadWtChg.Sp<-TadWtChange[Sp]/TadDens[Sp])
+plot(TadDens[LC], IndTadWtChg.LC, ylim=c(-2.5,1.5))
+points(TadDens[Sp], IndTadWtChg.Sp, col=4)
+IndTadWtChgDensLC.lm<-lm(IndTadWtChg.LC~TadDens[LC])
+IndTadWtChgDensLC.aov<-aov(IndTadWtChg.LC~TadDens[LC])
+summary(IndTadWtChgDensLC.lm)
+summary(IndTadWtChgDensLC.aov)
+abline(IndTadWtChgDensLC.lm, col=1)
+abline(IndTadWtChgDensSp.lm, col=4)
+plot(resid(IndTadWtChgDensLC.lm), col=1)
+points(resid(IndTadWtChgDensSp.lm), col=4)
+abline(0,0)
+
+IndTadWtChgDensSp.lm<-lm(IndTadWtChg.Sp~TadDens[Sp])
+summary(IndTadWtChgDensSp.lm)
+IndTadWtChgDensSp.aov<-aov(IndTadWtChg.Sp~TadDens[Sp])
+summary(IndTadWtChgDensSp.aov)
+
+######Auto Correlation in MFs
+
+LargeCR$MFDensChg<-MFDens-MFCount
+
+IndMFWt.LC<-MFBiomassEnd[LC]/MFDens[LC]
+IndMFWt.Sp<-MFBiomassEnd[Sp]/MFDens[Sp]
+IndMFWtChg.LC<-MFBiomassChange[LC]/MFDens[LC]
+IndMFWtChg.Sp<-MFBiomassChange[Sp]/MFDens[Sp]
+IndMFWtChgDensChg.LC<-MFBiomassChange[LC]/MFDensChg[LC]
+IndMFWtChgDensChg.Sp<-MFBiomassChange[Sp]/MFDensChg[Sp]
+plot(MFDens[LC], IndMFWt.LC, col=1)
+points(MFDens[Sp], IndMFWt.Sp, col=2)
+
+##deal with excess of MFs in Cage6, S3: Tx=0, Count=2
+length(IndMFWt.Sp)
+IndMFWt.Sp[57]<-0.00134723/2
+
+IndMFWtDens.LC.lm<-lm(IndMFWtChg.LC~MFDens[LC])
+summary(IndMFWtDens.LC.lm)
+IndMFWtDens.LC.aov<-aov(IndMFWt.LC~MFDens[LC])
+summary(IndMFWtDens.LC.lm)
+
+IndMFWtDens.Sp.lm<-lm(IndMFWtChg.Sp~MFDens[Sp])
+summary(IndMFWtDens.Sp.lm)
+IndMFWtDens.Sp.aov<-aov(IndMFWt.Sp~MFDens[Sp])
+summary(IndMFWtDens.Sp.aov)
+
+
+
+
+
+
+
+TadWtDens.lme<-lme(IndTadWt~TadDens+LakeName, random=~1|SampleNumber/CageID, data=LargeCR, subset=ASD.Exp)
+
+
+
+
+
+

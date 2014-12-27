@@ -1,0 +1,36 @@
+rm(list=ls())
+detach()
+
+CRAlgae<-read.csv("C:\\Users\\thsmith\\Desktop\\Summer 2010\\2010CRAlgae.csv")
+attach(CRAlgae)
+str(CRAlgae)
+names(CRAlgae) 
+TankNumberF$CRAlgae<-as.factor(TankNumber)
+
+##Date Subsets
+Jul7<-which(SampleDate=="7-Jul-10")
+Jul8<-which(SampleDate=="8-Jul-10")
+Jul9<-which(SampleDate=="9-Jul-10")
+Jul11<-which(SampleDate=="11-Jul-10")
+Aug4<-which(SampleDate=="4-Aug-10")
+
+##Tile Subsets
+Tank4<-which(TankNumber==4)
+Tank7<-which(TankNumber==7)
+Tank11<-which(TankNumber==11)
+Tank13<-which(TankNumber==13)
+
+
+plot(SampleDate[Tank4], AFDM[Tank4], ylim=c(0,.005))
+points(SampleDate[Tank7], AFDM[Tank7], col=2)
+points(SampleDate[Tank11], AFDM[Tank11], col=3)
+points(SampleDate[Tank13], AFDM[Tank13], col=4)
+
+plot(TankNumber[Jul7], AFDM[Jul7], xlim=c(0,17))
+points(TankNumber[Jul8], AFDM[Jul8], col=2)
+points(TankNumber[Jul9], AFDM[Jul9], col=3)
+points(TankNumber[Jul11], AFDM[Jul11], col=4)
+points(TankNumber[Aug4], AFDM[Aug4], col=5)
+
+.aov<-aov(~)
+summary(.aov)

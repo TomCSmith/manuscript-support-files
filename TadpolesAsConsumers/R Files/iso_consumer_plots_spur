@@ -1,0 +1,229 @@
+SpAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10475AWBD.csv", header=T)
+
+par(mfrow=c(3,2))
+
+M0<-which(SpAWBD$MFDens==0)
+d1<-SpAWBD$TadDens[M0]
+d2<-SpAWBD$Spur13Aug[M0]
+o1<-order(d1)
+o2<-order(d2)
+plot(d1[o1],d2[o2], col="red", pch=16, xlab="tad dens", ylab="algal growth rate", ylim=c(0,0.01))
+lines(d1[o1],d2[o2], col="red")
+text(10,0.00045, "MF0=red", pos=2)
+
+M25<-which(SpAWBD$MFDens==25)
+e1<-SpAWBD$TadDens[M25]
+e2<-SpAWBD$Spur13Aug[M25]
+p1<-order(e1)
+p2<-order(e2)
+points(e1[p1],e2[p2], col="black", pch=16)
+lines(e1[p1],e2[p2], col="black")
+text(10,0.00042, "MF25=black", pos=2)
+
+M125<-which(SpAWBD$MFDens==125)
+f1<-SpAWBD$TadDens[M125]
+f2<-SpAWBD$Spur13Aug[M125]
+q1<-order(f1)
+q2<-order(f2)
+points(f1[q1],f2[q2], col="blue", pch=16)
+lines(f1[q1],f2[q2], col="blue")
+text(10,.00039, "MF125=blue", pos=2)
+
+M250<-which(SpAWBD$MFDens==250)
+g1<-SpAWBD$TadDens[M250]
+g2<-SpAWBD$Spur13Aug[M250]
+r1<-order(g1)
+r2<-order(g2)
+points(g1[r1],g2[r2], col="green", pch=16)
+lines(g1[r1],g2[r2], col="green")
+text(10,0.00036, "MF250=grrrn", pos=2)
+
+
+T0<-which(SpAWBD$TadDens==0)
+dd1<-SpAWBD$MFDens[T0]
+dd2<-SpAWBD$Spur13Aug[T0]
+oo1<-order(dd1)
+oo2<-order(dd2)
+plot(dd1[oo1],dd2[oo2], col="red", pch=16, xlab="MF dens", ylab="algal growth rate", ylim=c(0,0.01))
+lines(dd1[oo1],dd2[oo2], col="red")
+text(100,0.00045, "T0=red", pos=2)
+
+T2<-which(SpAWBD$TadDens==2)
+ee1<-SpAWBD$MFDens[T2]
+ee2<-SpAWBD$Spur13Aug[T2]
+pp1<-order(ee1)
+pp2<-order(ee2)
+points(ee1[pp1],ee2[pp2], col="black", pch=16)
+lines(ee1[pp1],ee2[pp2], col="black")
+text(100,0.00042, "T2=black", pos=2)
+
+T10<-which(SpAWBD$TadDens==10)
+ff1<-SpAWBD$MFDens[T10]
+ff2<-SpAWBD$Spur13Aug[T10]
+qq1<-order(ff1)
+qq2<-order(ff2)
+points(ff1[qq1],ff2[qq2], col="blue", pch=16)
+lines(ff1[qq1],ff2[qq2], col="blue")
+text(100,.00039, "T10=blue", pos=2)
+
+T20<-which(SpAWBD$TadDens==20)
+gg1<-SpAWBD$MFDens[T20]
+gg2<-SpAWBD$Spur13Aug[T20]
+rr1<-order(gg1)
+rr2<-order(gg2)
+points(gg1[rr1],gg2[rr2], col="green", pch=16)
+lines(gg1[rr1],gg2[rr2], col="green")
+text(100,0.00036, "T20=grrrn", pos=2)
+
+
+##date "Spur1Sep"  
+
+M0<-which(SpAWBD$MFDens==0)
+d1<-SpAWBD$TadDens[M0]
+d2<-SpAWBD$Spur1SepM0]
+o1<-order(d1)
+o2<-order(d2)
+plot(d1[o1],d2[o2], col="red", pch=16, xlab="tad dens", ylab="algal growth rate", ylim=c(0,0.01))
+lines(d1[o1],d2[o2], col="red")
+text(10,0.00045, "MF0=red", pos=2)
+
+M25<-which(SpAWBD$MFDens==25)
+e1<-SpAWBD$TadDens[M25]
+e2<-SpAWBD$Spur1Sep[M25]
+p1<-order(e1)
+p2<-order(e2)
+points(e1[p1],e2[p2], col="black", pch=16)
+lines(e1[p1],e2[p2], col="black")
+text(10,0.00042, "MF25=black", pos=2)
+
+M125<-which(SpAWBD$MFDens==125)
+f1<-SpAWBD$TadDens[M125]
+f2<-SpAWBD$ Spur1Sep [M125]
+q1<-order(f1)
+q2<-order(f2)
+points(f1[q1],f2[q2], col="blue", pch=16)
+lines(f1[q1],f2[q2], col="blue")
+text(10,.00039, "MF125=blue", pos=2)
+
+M250<-which(SpAWBD$MFDens==250)
+g1<-SpAWBD$TadDens[M250]
+g2<-SpAWBD$ Spur1Sep [M250]
+r1<-order(g1)
+r2<-order(g2)
+points(g1[r1],g2[r2], col="green", pch=16)
+lines(g1[r1],g2[r2], col="green")
+text(10,0.00036, "MF250=grrrn", pos=2)
+
+
+T0<-which(SpAWBD$TadDens==0)
+dd1<-SpAWBD$MFDens[T0]
+dd2<-SpAWBD$ Spur1Sep [T0]
+oo1<-order(dd1)
+oo2<-order(dd2)
+plot(dd1[oo1],dd2[oo2], col="red", pch=16, xlab="MF dens", ylab="algal growth rate", ylim=c(0,0.01))
+lines(dd1[oo1],dd2[oo2], col="red")
+text(100,0.00045, "T0=red", pos=2)
+
+T2<-which(SpAWBD$TadDens==2)
+ee1<-SpAWBD$MFDens[T2]
+ee2<-SpAWBD$ Spur1Sep [T2]
+pp1<-order(ee1)
+pp2<-order(ee2)
+points(ee1[pp1],ee2[pp2], col="black", pch=16)
+lines(ee1[pp1],ee2[pp2], col="black")
+text(100,0.00042, "T2=black", pos=2)
+
+T10<-which(SpAWBD$TadDens==10)
+ff1<-SpAWBD$MFDens[T10]
+ff2<-SpAWBD$ Spur1Sep [T10]
+qq1<-order(ff1)
+qq2<-order(ff2)
+points(ff1[qq1],ff2[qq2], col="blue", pch=16)
+lines(ff1[qq1],ff2[qq2], col="blue")
+text(100,.00039, "T10=blue", pos=2)
+
+T20<-which(SpAWBD$TadDens==20)
+gg1<-SpAWBD$MFDens[T20]
+gg2<-SpAWBD$ Spur1Sep [T20]
+rr1<-order(gg1)
+rr2<-order(gg2)
+points(gg1[rr1],gg2[rr2], col="green", pch=16)
+lines(gg1[rr1],gg2[rr2], col="green")
+text(100,0.00036, "T20=grrrn", pos=2)
+
+
+##date3 "Spur20Sep"
+
+M0<-which(SpAWBD$MFDens==0)
+d1<-SpAWBD$TadDens[M0]
+d2<-SpAWBD$ Spur20Sep [M0]
+o1<-order(d1)
+o2<-order(d2)
+plot(d1[o1],d2[o2], col="red", pch=16, xlab="tad dens", ylab="algal growth rate", ylim=c(0,0.01))
+lines(d1[o1],d2[o2], col="red")
+text(10,0.00045, "MF0=red", pos=2)
+
+M25<-which(SpAWBD$MFDens==25)
+e1<-SpAWBD$TadDens[M25]
+e2<-SpAWBD$Spur13Aug[M25]
+p1<-order(e1)
+p2<-order(e2)
+points(e1[p1],e2[p2], col="black", pch=16)
+lines(e1[p1],e2[p2], col="black")
+text(10,0.00042, "MF25=black", pos=2)
+
+M125<-which(SpAWBD$MFDens==125)
+f1<-SpAWBD$TadDens[M125]
+f2<-SpAWBD$ Spur20Sep [M125]
+q1<-order(f1)
+q2<-order(f2)
+points(f1[q1],f2[q2], col="blue", pch=16)
+lines(f1[q1],f2[q2], col="blue")
+text(10,.00039, "MF125=blue", pos=2)
+
+M250<-which(SpAWBD$MFDens==250)
+g1<-SpAWBD$TadDens[M250]
+g2<-SpAWBD$ Spur20Sep [M250]
+r1<-order(g1)
+r2<-order(g2)
+points(g1[r1],g2[r2], col="green", pch=16)
+lines(g1[r1],g2[r2], col="green")
+text(10,0.00036, "MF250=grrrn", pos=2)
+
+
+T0<-which(SpAWBD$TadDens==0)
+dd1<-SpAWBD$MFDens[T0]
+dd2<-SpAWBD$ Spur20Sep [T0]
+oo1<-order(dd1)
+oo2<-order(dd2)
+plot(dd1[oo1],dd2[oo2], col="red", pch=16, xlab="MF dens", ylab="algal growth rate", ylim=c(0,0.01))
+lines(dd1[oo1],dd2[oo2], col="red")
+text(100,0.00045, "T0=red", pos=2)
+
+T2<-which(SpAWBD$TadDens==2)
+ee1<-SpAWBD$MFDens[T2]
+ee2<-SpAWBD$ Spur20Sep [T2]
+pp1<-order(ee1)
+pp2<-order(ee2)
+points(ee1[pp1],ee2[pp2], col="black", pch=16)
+lines(ee1[pp1],ee2[pp2], col="black")
+text(100,0.00042, "T2=black", pos=2)
+
+T10<-which(SpAWBD$TadDens==10)
+ff1<-SpAWBD$MFDens[T10]
+ff2<-SpAWBD$ Spur20Sep [T10]
+qq1<-order(ff1)
+qq2<-order(ff2)
+points(ff1[qq1],ff2[qq2], col="blue", pch=16)
+lines(ff1[qq1],ff2[qq2], col="blue")
+text(100,.00039, "T10=blue", pos=2)
+
+T20<-which(SpAWBD$TadDens==20)
+gg1<-SpAWBD$MFDens[T20]
+gg2<-SpAWBD$ Spur20Sep [T20]
+rr1<-order(gg1)
+rr2<-order(gg2)
+points(gg1[rr1],gg2[rr2], col="green", pch=16)
+lines(gg1[rr1],gg2[rr2], col="green")
+text(100,0.00036, "T20=grrrn", pos=2)
+

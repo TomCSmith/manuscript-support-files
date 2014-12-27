@@ -1,0 +1,82 @@
+Script: Mayfly average biomasses for estimation
+
+detach(MFBiomass)
+rm(list=ls())
+
+MFBiomass<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\MFBiomass.csv", header=T)
+attach(MFBiomass)
+names(MFBiomass)
+
+##"ID"         "LakeID"     "SampleDate" "Cage."      "GenusSpp"  
+##"GenusNum"   "MFLength"   "FoilWt"     "DryWt"      "AshMass"   
+##"AFDM"  
+
+mean(AFDM)##.001858640
+
+##Wild MFs by Species
+MF.C<-which(GenusSpp=="Callibaetis" & Cage.==0)
+MF.A<-which(GenusSpp=="Ameletus" & Cage.==0)
+mean(AFDM[MF.C])##.001186076
+mean(AFDM[MF.A])##.001918782
+
+##Wild MFs by Lake
+MF.Sp<-which(LakeID=="10475" & Cage.==0)
+MF.LC<-which(LakeID=="10102" & Cage.==0)
+mean(AFDM[MF.Sp])##.001064286
+mean(AFDM[MF.LC])##.002064045
+
+##Wild By Lake and Species
+MF.Sp.A<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0)
+MF.LC.A<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0)
+mean(AFDM[MF.Sp.A])##.00054
+mean(AFDM[MF.LC.A])##.002074576
+
+
+##All by Lake and Species
+MF.Sp.A.All<-which(LakeID=="10475" & GenusSpp=="Ameletus")
+MF.LC.A.All<-which(LakeID=="10102" & GenusSpp=="Ameletus")
+mean(AFDM[MF.Sp.A.All])##.00054
+mean(AFDM[MF.LC.A.All])##.002171654
+
+##both lakes both species, different dates
+MF.S1<-which(Cage.==0 & (SampleDate=="15-Jul-09"|SampleDate=="20-Jul-09"))
+MF.S2<-which(Cage.==0 & (SampleDate=="1-Aug-09"|SampleDate=="12-Aug-09"))
+MF.S3<-which(Cage.==0 & (SampleDate=="24-Aug-09"|SampleDate=="31-Aug-09"))
+MF.S4<-which(Cage.==0 & (SampleDate=="12-Sep-09"|SampleDate=="20-Sep-09"))
+mean(AFDM[MF.S1])##.001554321
+mean(AFDM[MF.S2])##.00182809
+mean(AFDM[MF.S3])##.001917949
+mean(AFDM[MF.S4])##.001196429
+
+##10102, Ameletus, each date
+MF.LC.A.S1<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="15-Jul-09")
+MF.LC.A.S2<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="1-Aug-09")
+MF.LC.A.S3<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="24-Aug-09")
+MF.LC.A.S4<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="12-Sep-09")
+mean(AFDM[MF.LC.A.S1])##.001624490
+mean(AFDM[MF.LC.A.S2])##.002150847
+mean(AFDM[MF.LC.A.S3])##.003033333
+mean(AFDM[MF.LC.A.S4])##.001233333
+
+##10475_Ameletus, each date
+MF.Sp.A.S1<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="20-Jul-09")
+MF.Sp.A.S2<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="12-Aug-09")
+MF.Sp.A.S3<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="31-Aug-09")
+MF.Sp.A.S4<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="20-Sep-09")
+mean(AFDM[MF.Sp.A.S1])##NaN
+mean(AFDM[MF.Sp.A.S2])##.00075
+mean(AFDM[MF.Sp.A.S3])##.0005166667
+mean(AFDM[MF.Sp.A.S4])##NaN
+
+##Cage v. Wild All Svys
+MF.Wild<-which(Cage.==0)
+MF.Cage<-which(Cage.!=0)
+mean(AFDM[MF.Wild])##.001709058
+mean(AFDM[MF.Cage])##.002394805
+
+##Final Survey Date
+MF.Wild.S4<-which(Cage.==0 & (SampleDate=="12-Sep-09" | SampleDate=="20-Sep-09"))
+MF.Cage.S4<-which(Cage.!=0 & (SampleDate=="12-Sep-09" | SampleDate=="20-Sep-09"))
+mean(AFDM[MF.Wild.S4])##.001196429
+mean(AFDM[MF.Cage.S4])##.002394805
+##***should continue this with Final AFDM by wild/cage, and species or lake

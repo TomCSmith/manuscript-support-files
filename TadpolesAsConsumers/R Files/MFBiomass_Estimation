@@ -1,0 +1,470 @@
+rm(list=ls())
+detach()
+
+MFBiomass<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\MFBiomass.csv", header=T)
+MFBiomass<-read.csv("H:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+
+names(MFBiomass)
+str(MFBiomass)
+MFBiomass$LakeIDF<-as.factor(MFBiomass$LakeID)
+attach(MFBiomass)
+
+
+####Estimation of AFDM of MFs in Cages at S1, S2, S3
+1. calculate a regression for each lake.sample from wild MF samples at each date
+2. calculate a mean AFDM for individuals MFs for each wild spp.lake.sample
+3. multiply that mean by the ratio of Cage:Wild MFs (currently estimated at Cage=1.858xWild)
+4. multiply by the number counted in cage to calculate the cumulative "end" biomass
+5. Add to that the mean wild AFDM by number of Wild MFs added to top off density for "start" of next cycle.
+
+##exploratory math: linear regressions, residuals, normality of residuals, with respect to simulating data
+##could add error to mean from the residual distribution of each wild.lake.spp.sample x 1.858
+##-need parameters a and b from lms. x is an index of simulated individuals
+
+plot(MFLength, AFDM)
+AFDM.LM<-lm(AFDM~MFLength)
+abline(AFDM.LM)
+plot(resid(AFDM.LM))
+abline(0,0)
+hist(resid(AFDM.LM))
+
+##Crawley's Skew Function: to test for normality of data sets (here, the residuals of above)
+skew<-function(x){
+m3<-sum((x-mean(x))^3)/length(x)
+s3<-sqrt(var(x))^3
+m3/s3}
+##skew of whole sample
+skew(resid(AFDM.LM))
+skew(resid(AFDM.LM))/sqrt(6/length(resid(AFDM.LM)))
+1-pt(32.52336,434)##=0; so residuals are not-normally distributed, are something like log-normal or gamma?
+
+par(mfrow=c(3,2))
+
+######MFBiomass Separated by Lake/Date/Species/Wild, and Lake/Spp/S4/Cage (MF.LakeID.Spp.Sample.WildorCage)
+####LeConte
+##10102, each date wild and S4 cage
+MF.LC.S1.W<-which(LakeID=="10102" & Cage.==0 & SampleDate=="15-Jul-09")
+MF.LC.S2.W<-which(LakeID=="10102" & Cage.==0 & SampleDate=="1-Aug-09")
+MF.LC.S3.W<-which(LakeID=="10102" & Cage.==0 & SampleDate=="24-Aug-09")
+MF.LC.S4.W<-which(LakeID=="10102" & Cage.==0 & SampleDate=="12-Sep-09")
+MF.LC.S4.C<-which(LakeID=="10102" & Cage.!=0 & SampleDate=="12-Sep-09")
+
+plot(MFLength[MF.LC.S1.W], AFDM[MF.LC.A.S1.W], col=1, pch=15, xlim=c(0,12), ylim=c(0,.0075))
+LM.MF.LC.S1.W<-lm(AFDM[MF.LC.S1.W]~MFLength[MF.LC.S1.W])
+abline(LM.MF.LC.S1.W, col=1)
+points(MFLength[MF.LC.S2.W], AFDM[MF.LC.S2.W], col=2, pch=16)
+LM.MF.LC.S2.W<-lm(AFDM[MF.LC.S2.W]~MFLength[MF.LC.S2.W])
+abline(LM.MF.LC.S2.W, col=2)
+points(MFLength[MF.LC.S3.W], AFDM[MF.LC.S3.W], col=3, pch=17)
+LM.MF.LC.S3.W<-lm(AFDM[MF.LC.S3.W]~MFLength[MF.LC.S3.W])
+abline(LM.MF.LC.S3.W, col=3)
+plot(MFLength[MF.LC.S4.W], AFDM[MF.LC.S4.W], col=4, pch=18, xlim=c(0,12), ylim=c(0,.0075))
+LM.MF.LC.S4.W<-lm(AFDM[MF.LC.S4.W]~MFLength[MF.LC.S4.W])
+abline(LM.MF.LC.S4.W, col=4)
+points(MFLength[MF.LC.S4.C], AFDM[MF.LC.S4.C], col=5, pch=19)
+LM.MF.LC.S4.C<-lm(AFDM[MF.LC.S4.C]~MFLength[MF.LC.S4.C])
+abline(LM.MF.LC.S4.C, col=5)
+
+hist(AFDM[MF.LC.S1.W], xlim=c(0,0.01), ylim=c(0,30))
+hist(AFDM[MF.LC.S2.W], xlim=c(0,0.01), ylim=c(0,30))
+hist(AFDM[MF.LC.S3.W], xlim=c(0,0.01), ylim=c(0,30))
+hist(AFDM[MF.LC.S4.W], xlim=c(0,0.01), ylim=c(0,30))
+
+
+####Spur
+##10475_Ameletus, each date wild and S4 cage
+MF.Sp.S1.W<-which(LakeID=="10475" & Cage.==0 & SampleDate=="20-Jul-09")
+MF.Sp.S2.W<-which(LakeID=="10475" & Cage.==0 & SampleDate=="12-Aug-09")
+MF.Sp.S3.W<-which(LakeID=="10475" & Cage.==0 & SampleDate=="31-Aug-09")
+MF.Sp.S4.W<-which(LakeID=="10475" & Cage.==0 & (SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+MF.Sp.S4.C<-which(LakeID=="10475" & Cage.!=0 & (SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+
+##*****S1 has 0 Am, S2 has 2, ; other three samples have enough for lm****
+
+##plot(MFLength[MF.Sp.S1.W], AFDM[MF.Sp.S1.W], col=1, pch=15, xlim=c(0,12), ylim=c(0,.0075))
+##LM.MF.Sp.S1.W<-lm(AFDM[MF.Sp.S1.W]~MFLength[MF.Sp.S1.W])
+##abline(LM.MF.Sp.S1.W, col=1)
+##points(MFLength[MF.Sp.S2.W], AFDM[MF.Sp.S2.W], col=2, pch=16)
+##LM.MF.Sp.S2.W<-lm(AFDM[MF.Sp.S2.W]~MFLength[MF.Sp.S2.W])
+##abline(LM.MF.Sp.S2.W, col=2)
+plot(MFLength[MF.Sp.S3.W], AFDM[MF.Sp.S3.W], col=3, pch=17, xlim=c(0,12), ylim=c(0,.0075))
+LM.MF.Sp.S3.W<-lm(AFDM[MF.Sp.S3.W]~MFLength[MF.Sp.S3.W])
+abline(LM.MF.Sp.S3.W, col=3)
+plot(MFLength[MF.Sp.S4.W], AFDM[MF.Sp.S4.W], col=4, pch=18, xlim=c(0,12), ylim=c(0,.0075))
+LM.MF.Sp.S4.W<-lm(AFDM[MF.Sp.S4.W]~MFLength[MF.Sp.S4.W])
+abline(LM.MF.Sp.S4.W, col=4)
+points(MFLength[MF.Sp.S4.C], AFDM[MF.Sp.S4.C], col=5, pch=19)
+LM.MF.Sp.S4.C<-lm(AFDM[MF.Sp.S4.C]~MFLength[MF.Sp.S4.C])
+abline(LM.MF.Sp.S4.C, col=5)
+
+hist(AFDM[MF.Sp.S3.W], xlim=c(0,0.01), ylim=c(0,30))
+hist(AFDM[MF.Sp.S4.W], xlim=c(0,0.01), ylim=c(0,30))
+hist(AFDM[MF.Sp.S4.C], xlim=c(0,0.01), ylim=c(0,30))
+
+
+####lenghts of vectors = number individuals in sample
+##Spur MFs
+length(MF.Sp.S1.W)##=
+length(MF.Sp.S2.W)##=
+length(MF.Sp.S3.W)##=
+length(MF.Sp.S4.W)##=
+length(MF.Sp.S4.C)##=
+
+
+##LeConte MFs
+length(MF.LC.S1.W)##=
+length(MF.LC.S2.W)##=
+length(MF.LC.S3.W)##=
+length(MF.LC.S4.W)##=
+length(MF.LC.S4.C)##=
+
+
+
+####means of wild samples
+##Spur 
+(AFDM.MF.Sp.S1.W.Mean<-mean(AFDM[MF.Sp.S1.W]))##=.001446875
+(AFDM.MF.Sp.S2.W.Mean<-mean(AFDM[MF.Sp.S2.W]))##=.001193333
+(AFDM.MF.Sp.S3.W.Mean<-mean(AFDM[MF.Sp.S3.W]))##=.000577778
+(AFDM.MF.Sp.S4.W.Mean<-mean(AFDM[MF.Sp.S4.W]))##=.00074
+
+##**C12 has Consumer Density 0,25, best to compare to natural MFDens
+##Average AFDM for individual MF in that cage is .000494
+AFDM.MF.Sp.S4.C12.Mean<-.000494
+
+##LeConte 
+(AFDM.MF.LC.S1.W.Mean<-mean(AFDM[MF.LC.S1.W]))##=.001624490
+(AFDM.MF.LC.S2.W.Mean<-mean(AFDM[MF.LC.S2.W]))##=.002150847
+(AFDM.MF.LC.S3.W.Mean<-mean(AFDM[MF.LC.S3.W]))##=.003033333
+(AFDM.MF.LC.S4.W.Mean<-mean(AFDM[MF.LC.S4.W]))##=.001196429
+
+MF.LC.S4.C.6.7<-which(LakeID=="10102" & (Cage.==6 | Cage.==7) & SampleDate=="12-Sep-09")
+(AFDM.MF.LC.S4.C67.Mean<-mean(AFDM[MF.LC.S4.C.6.7]))
+##Average AFDM for individual MF in Cages 6 and 7 is .00303125; this is higher than the average AFDM per individual for all MFDens treatments, see below
+(AFDM.MF.LC.S4.C.Mean<-mean(AFDM[MF.LC.S4.C]))##=.002394805
+
+
+####ratio of wild:cage samples at S4
+##Spur 
+(AFDM.MF.Sp.S4.C12.Mean/AFDM.MF.Sp.S4.W.Mean)##=.6675676
+
+##LeConte 
+(AFDM.MF.LC.S4.C67.Mean/AFDM.MF.LC.S4.W.Mean)##=2.533582
+
+######## Adjusted Means for Starting MF Biomasses(product of means of samples x ratio of wild:cage) X number of individuals = biomass of cage sample
+####estimated biomass at start of each sample
+##****must calc UNITS!!!
+
+######Estimated Total Biomassses
+####Spur Adjusted Cage Starting Biomasses
+(AFDM.MF.Sp.S1.W.Mean.Adj<-AFDM.MF.Sp.S1.W.Mean*.6675676)##=.0009658869
+(AFDM.MF.Sp.S2.W.Mean.Adj<-AFDM.MF.Sp.S2.W.Mean*.6675676)##=.0007966307
+(AFDM.MF.Sp.S3.W.Mean.Adj<-AFDM.MF.Sp.S3.W.Mean*.6675676)##=.0003857057
+(AFDM.MF.Sp.S4.W.Mean.Adj<-AFDM.MF.Sp.S4.W.Mean*.6675676)##=.000494
+##S1
+(d25.AFDM.MF.Sp.S1.W.Mean.Adj<-25*AFDM.MF.Sp.S1.W.Mean.Adj)##=.
+(d125.AFDM.MF.Sp.S1.W.Mean.Adj<-125*AFDM.MF.Sp.S1.W.Mean.Adj)##=.
+(d250.AFDM.MF.Sp.S1.W.Mean.Adj<-250*AFDM.MF.Sp.S1.W.Mean.Adj)##=.
+##S2
+(d25.AFDM.MF.Sp.S2.W.Mean.Adj<-25*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d125.AFDM.MF.Sp.S2.W.Mean.Adj<-125*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d250.AFDM.MF.Sp.S2.W.Mean.Adj<-250*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+##S3
+(d25.AFDM.MF.Sp.S3.W.Mean.Adj<-25*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d125.AFDM.MF.Sp.S3.W.Mean.Adj<-125*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d250.AFDM.MF.Sp.S3.W.Mean.Adj<-250*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+##S4
+(d25.AFDM.MF.Sp.S4.W.Mean.Adj<-25*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(d125.AFDM.MF.Sp.S4.W.Mean.Adj<-125*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(d250.AFDM.MF.Sp.S4.W.Mean.Adj<-250*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+
+####LeConte Adjusted Cage Starting Biomasses
+(AFDM.MF.LC.S1.W.Mean.Adj<-AFDM.MF.LC.S1.W.Mean*2.533582)##=.
+(AFDM.MF.LC.S2.W.Mean.Adj<-AFDM.MF.LC.S2.W.Mean*2.533582)##=.
+(AFDM.MF.LC.S3.W.Mean.Adj<-AFDM.MF.LC.S3.W.Mean*2.533582)##=.
+(AFDM.MF.LC.S4.W.Mean.Adj<-AFDM.MF.LC.S4.W.Mean*2.533582)##=.
+##S1
+(d25.AFDM.MF.LC.S1.W.Mean.Adj<-25*AFDM.MF.LC.S1.W.Mean.Adj)##=.
+(d125.AFDM.MF.LC.S1.W.Mean.Adj<-125*AFDM.MF.LC.S1.W.Mean.Adj)##=.
+(d250.AFDM.MF.LC.S1.W.Mean.Adj<-250*AFDM.MF.LC.S1.W.Mean.Adj)##=.
+##S2
+(d25.AFDM.MF.LC.S2.W.Mean.Adj<-25*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(d125.AFDM.MF.LC.S2.W.Mean.Adj<-125*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(d250.AFDM.MF.LC.S2.W.Mean.Adj<-250*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+##S3
+(d25.AFDM.MF.LC.S3.W.Mean.Adj<-25*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(d125.AFDM.MF.LC.S3.W.Mean.Adj<-125*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(d250.AFDM.MF.LC.S3.W.Mean.Adj<-250*AFDM.MF.LC.S3.W.Mean.Adj)##=
+##S4
+(d25.AFDM.MF.LC.S4.W.Mean.Adj<-25*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(d125.AFDM.MF.LC.S4.W.Mean.Adj<-125*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(d250.AFDM.MF.LC.S4.W.Mean.Adj<-250*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+
+######Ending Biomasses of each session
+####Spur Cage Ending Biomasses 
+##S1 was beginning of exp't see starting Biomass
+
+##S2 Cage 1-17
+(C1.AFDM.MF.Sp.S2.W.Mean.Adj<-26*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C2.AFDM.MF.Sp.S2.W.Mean.Adj<-3*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C3.AFDM.MF.Sp.S2.W.Mean.Adj<-11*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C4.AFDM.MF.Sp.S2.W.Mean.Adj<-11*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C5.AFDM.MF.Sp.S2.W.Mean.Adj<-5*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C6.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(C7.AFDM.MF.Sp.S2.W.Mean.Adj<-0*AFDM.MF.Sp.S2.W.Mean.Adj)##=0
+(C8.AFDM.MF.Sp.S2.W.Mean.Adj<-17*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C9.AFDM.MF.Sp.S2.W.Mean.Adj<-18*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C10.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(C11.AFDM.MF.Sp.S2.W.Mean.Adj<-0*AFDM.MF.Sp.S2.W.Mean.Adj)##=0
+(C12.AFDM.MF.Sp.S2.W.Mean.Adj<-0*AFDM.MF.Sp.S2.W.Mean.Adj)##=0
+(C13.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(C14.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(C15.AFDM.MF.Sp.S2.W.Mean.Adj<-0*AFDM.MF.Sp.S2.W.Mean.Adj)##=0
+(C16.AFDM.MF.Sp.S2.W.Mean.Adj<-14*AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(C17.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+
+##S3
+(C1.AFDM.MF.Sp.S3.W.Mean.Adj<-51*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C2.AFDM.MF.Sp.S3.W.Mean.Adj<-11*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C3.AFDM.MF.Sp.S3.W.Mean.Adj<-96*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C4.AFDM.MF.Sp.S3.W.Mean.Adj<-136*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C5.AFDM.MF.Sp.S3.W.Mean.Adj<-53*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C6.AFDM.MF.Sp.S3.W.Mean.Adj<-2*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C7.AFDM.MF.Sp.S3.W.Mean.Adj<-6*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C8.AFDM.MF.Sp.S3.W.Mean.Adj<-180*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C9.AFDM.MF.Sp.S3.W.Mean.Adj<-86*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C10.AFDM.MF.Sp.S3.W.Mean.Adj<-0*AFDM.MF.Sp.S3.W.Mean.Adj)##=0
+(C11.AFDM.MF.Sp.S3.W.Mean.Adj<-53*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C12.AFDM.MF.Sp.S3.W.Mean.Adj<-7*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C13.AFDM.MF.Sp.S3.W.Mean.Adj<-0*AFDM.MF.Sp.S3.W.Mean.Adj)##=0
+(C14.AFDM.MF.Sp.S3.W.Mean.Adj<-0*AFDM.MF.Sp.S3.W.Mean.Adj)##=0
+(C15.AFDM.MF.Sp.S3.W.Mean.Adj<-0*AFDM.MF.Sp.S3.W.Mean.Adj)##=.0
+(C16.AFDM.MF.Sp.S3.W.Mean.Adj<-143*AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(C17.AFDM.MF.Sp.S3.W.Mean.Adj<-0*AFDM.MF.Sp.S3.W.Mean.Adj)##=0
+
+##S4
+(C1.AFDM.MF.Sp.S4.W.Mean.Adj<-133*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C2.AFDM.MF.Sp.S4.W.Mean.Adj<-21*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C3.AFDM.MF.Sp.S4.W.Mean.Adj<-115*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C4.AFDM.MF.Sp.S4.W.Mean.Adj<-183*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C5.AFDM.MF.Sp.S4.W.Mean.Adj<-83*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C6.AFDM.MF.Sp.S4.W.Mean.Adj<-0*AFDM.MF.Sp.S4.W.Mean.Adj)##=.0
+(C7.AFDM.MF.Sp.S4.W.Mean.Adj<-28*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C8.AFDM.MF.Sp.S4.W.Mean.Adj<-204*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C9.AFDM.MF.Sp.S4.W.Mean.Adj<-113*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C10.AFDM.MF.Sp.S4.W.Mean.Adj<-0*AFDM.MF.Sp.S4.W.Mean.Adj)##=0
+(C11.AFDM.MF.Sp.S4.W.Mean.Adj<-61*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C12.AFDM.MF.Sp.S4.W.Mean.Adj<-17*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C13.AFDM.MF.Sp.S4.W.Mean.Adj<-0*AFDM.MF.Sp.S4.W.Mean.Adj)##=0
+(C14.AFDM.MF.Sp.S4.W.Mean.Adj<-0*AFDM.MF.Sp.S4.W.Mean.Adj)##=0
+(C15.AFDM.MF.Sp.S4.W.Mean.Adj<-36*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C16.AFDM.MF.Sp.S4.W.Mean.Adj<-157*AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(C17.AFDM.MF.Sp.S4.W.Mean.Adj<-0*AFDM.MF.Sp.S4.W.Mean.Adj)##=0
+
+
+
+####LeConte Ameletus Adjusted Cage Ending Biomasses
+##S1 beginning see starting biomass
+##S2
+(C1.AFDM.MF.LC.S2.W.Mean.Adj<-121*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C2.AFDM.MF.LC.S2.W.Mean.Adj<-100*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C3.AFDM.MF.LC.S2.W.Mean.Adj<-0*AFDM.MF.LC.S2.W.Mean.Adj)##=0
+(C4.AFDM.MF.LC.S2.W.Mean.Adj<-98*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C5.AFDM.MF.LC.S2.W.Mean.Adj<-190*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C6.AFDM.MF.LC.S2.W.Mean.Adj<-24*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C7.AFDM.MF.LC.S2.W.Mean.Adj<-22*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C8.AFDM.MF.LC.S2.W.Mean.Adj<-104*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C9.AFDM.MF.LC.S2.W.Mean.Adj<-0*AFDM.MF.LC.S2.W.Mean.Adj)##=0
+(C10.AFDM.MF.LC.S2.W.Mean.Adj<-190*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C11.AFDM.MF.LC.S2.W.Mean.Adj<-0*AFDM.MF.LC.S2.W.Mean.Adj)##=0
+(C12.AFDM.MF.LC.S2.W.Mean.Adj<-0*AFDM.MF.LC.S2.W.Mean.Adj)##=0
+(C13.AFDM.MF.LC.S2.W.Mean.Adj<-192*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C14.AFDM.MF.LC.S2.W.Mean.Adj<-149*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C15.AFDM.MF.LC.S2.W.Mean.Adj<-0*AFDM.MF.LC.S2.W.Mean.Adj)##=0
+(C16.AFDM.MF.LC.S2.W.Mean.Adj<-21*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+(C17.AFDM.MF.LC.S2.W.Mean.Adj<-11*AFDM.MF.LC.S2.W.Mean.Adj)##=.
+
+##S3
+(C1.AFDM.MF.LC.S3.W.Mean.Adj<-73*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C2.AFDM.MF.LC.S3.W.Mean.Adj<-58*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C3.AFDM.MF.LC.S3.W.Mean.Adj<-0*AFDM.MF.LC.S3.W.Mean.Adj)##=0
+(C4.AFDM.MF.LC.S3.W.Mean.Adj<-82*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C5.AFDM.MF.LC.S3.W.Mean.Adj<-171*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C6.AFDM.MF.LC.S3.W.Mean.Adj<-11*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C7.AFDM.MF.LC.S3.W.Mean.Adj<-7*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C8.AFDM.MF.LC.S3.W.Mean.Adj<-81*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C9.AFDM.MF.LC.S3.W.Mean.Adj<-0*AFDM.MF.LC.S3.W.Mean.Adj)##=0
+(C10.AFDM.MF.LC.S3.W.Mean.Adj<-179*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C11.AFDM.MF.LC.S3.W.Mean.Adj<-0*AFDM.MF.LC.S3.W.Mean.Adj)##=0
+(C12.AFDM.MF.LC.S3.W.Mean.Adj<-0*AFDM.MF.LC.S3.W.Mean.Adj)##=0
+(C13.AFDM.MF.LC.S3.W.Mean.Adj<-176*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C14.AFDM.MF.LC.S3.W.Mean.Adj<-62*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C15.AFDM.MF.LC.S3.W.Mean.Adj<-0*AFDM.MF.LC.S3.W.Mean.Adj)##=0
+(C16.AFDM.MF.LC.S3.W.Mean.Adj<-15*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+(C17.AFDM.MF.LC.S3.W.Mean.Adj<-10*AFDM.MF.LC.S3.W.Mean.Adj)##=.
+
+##S4
+(C1.AFDM.MF.LC.S4.W.Mean.Adj<-47*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C2.AFDM.MF.LC.S4.W.Mean.Adj<-39*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C3.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+(C4.AFDM.MF.LC.S4.W.Mean.Adj<-38*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C5.AFDM.MF.LC.S4.W.Mean.Adj<-89*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C6.AFDM.MF.LC.S4.W.Mean.Adj<-6*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C7.AFDM.MF.LC.S4.W.Mean.Adj<-8*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C8.AFDM.MF.LC.S4.W.Mean.Adj<-43*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C9.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+(C10.AFDM.MF.LC.S4.W.Mean.Adj<-113*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C11.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+(C12.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+(C13.AFDM.MF.LC.S4.W.Mean.Adj<-135*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C14.AFDM.MF.LC.S4.W.Mean.Adj<-34*AFDM.MF.LC.S4.W.Mean.Adj)##=.
+(C15.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+(C16.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+(C17.AFDM.MF.LC.S4.W.Mean.Adj<-0*AFDM.MF.LC.S4.W.Mean.Adj)##=0
+
+
+####final density x mean biomass of wild MFs at start of each session (have to use a mean that combines both spp) = biomass at start of each session
+see above
+
+
+
+######change in biomass = starting biomass at previous sample - ending biomass, ie:
+###### Delta Biomass = AdjMeanBiomass @ S1 x Starting Density - AdjMeanBiomass @ S2 x MFCounts
+
+####Spur
+##S2
+(d.C1.AFDM.MF.Sp.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C1.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C2.AFDM.MF.Sp.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C2.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C3.AFDM.MF.Sp.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C3.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C4.AFDM.MF.Sp.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C4.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C5.AFDM.MF.Sp.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C5.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C6.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(d.C7.AFDM.MF.Sp.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C7.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C8.AFDM.MF.Sp.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C8.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C9.AFDM.MF.Sp.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C9.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C10.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(d.C11.AFDM.MF.Sp.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C11.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C12.AFDM.MF.Sp.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C12.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C13.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(d.C14.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+(d.C15.AFDM.MF.Sp.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C15.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C16.AFDM.MF.Sp.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C16.AFDM.MF.Sp.S2.W.Mean.Adj)##=.
+(d.C17.AFDM.MF.Sp.S2.W.Mean.Adj<-0)##=0
+##S3
+(d.C1.AFDM.MF.Sp.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C1.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C2.AFDM.MF.Sp.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C2.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C3.AFDM.MF.Sp.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C3.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C4.AFDM.MF.Sp.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C4.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C5.AFDM.MF.Sp.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C5.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C6.AFDM.MF.Sp.S3.W.Mean.Adj<-0)##=0
+(d.C7.AFDM.MF.Sp.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C7.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C8.AFDM.MF.Sp.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C8.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C9.AFDM.MF.Sp.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C9.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C10.AFDM.MF.Sp.S3.W.Mean.Adj<-0)##=0
+(d.C11.AFDM.MF.Sp.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C11.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C12.AFDM.MF.Sp.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C12.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C13.AFDM.MF.Sp.S3.W.Mean.Adj<-0)##=0
+(d.C14.AFDM.MF.Sp.S3.W.Mean.Adj<-0)##=0
+(d.C15.AFDM.MF.Sp.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C15.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C16.AFDM.MF.Sp.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C16.AFDM.MF.Sp.S3.W.Mean.Adj)##=.
+(d.C17.AFDM.MF.Sp.S3.W.Mean.Adj<-0)##=0
+
+##S4
+(d.C1.AFDM.MF.Sp.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C1.AFDM.MF.Sp.S4.W.Mean.Adj)##=
+(d.C2.AFDM.MF.Sp.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C2.AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(d.C3.AFDM.MF.Sp.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C3.AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(d.C4.AFDM.MF.Sp.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C4.AFDM.MF.Sp.S4.W.Mean.Adj)##=1.
+(d.C5.AFDM.MF.Sp.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C5.AFDM.MF.Sp.S4.W.Mean.Adj)##=.
+(d.C6.AFDM.MF.Sp.S4.W.Mean.Adj<-0)##=0
+(d.C7.AFDM.MF.Sp.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C7.AFDM.MF.Sp.S4.W.Mean.Adj)##=.1466137
+(d.C8.AFDM.MF.Sp.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C8.AFDM.MF.Sp.S4.W.Mean.Adj)##=1.362607
+(d.C9.AFDM.MF.Sp.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C9.AFDM.MF.Sp.S4.W.Mean.Adj)##=.6847545
+(d.C10.AFDM.MF.Sp.S4.W.Mean.Adj<-0)##=0
+(d.C11.AFDM.MF.Sp.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C11.AFDM.MF.Sp.S4.W.Mean.Adj)##=.7132251
+(d.C12.AFDM.MF.Sp.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C12.AFDM.MF.Sp.S4.W.Mean.Adj)##=.1457509
+(d.C13.AFDM.MF.Sp.S4.W.Mean.Adj<-0)##=0
+(d.C14.AFDM.MF.Sp.S4.W.Mean.Adj<-0)##=0
+(d.C15.AFDM.MF.Sp.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C15.AFDM.MF.Sp.S4.W.Mean.Adj)##=.1517901
+(d.C16.AFDM.MF.Sp.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C16.AFDM.MF.Sp.S4.W.Mean.Adj)##=1.394529
+(d.C17.AFDM.MF.Sp.S4.W.Mean.Adj<-0)##=0
+
+
+####LeConte - change in biomass
+##S2
+(d.C1.AFDM.MF.LC.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C1.AFDM.MF.LC.S2.W.Mean.Adj)##=-.1144757
+(d.C2.AFDM.MF.LC.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C2.AFDM.MF.LC.S2.W.Mean.Adj)##=-.02406662
+(d.C3.AFDM.MF.LC.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C3.AFDM.MF.LC.S2.W.Mean.Adj)##=.4046453
+(d.C4.AFDM.MF.LC.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C4.AFDM.MF.LC.S2.W.Mean.Adj)##=-.01545622
+(d.C5.AFDM.MF.LC.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C5.AFDM.MF.LC.S2.W.Mean.Adj)##=-.005081269
+(d.C6.AFDM.MF.LC.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C6.AFDM.MF.LC.S2.W.Mean.Adj)##=-.02203411
+(d.C7.AFDM.MF.LC.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C7.AFDM.MF.LC.S2.W.Mean.Adj)##=-.01342372
+(d.C8.AFDM.MF.LC.S2.W.Mean.Adj<-d125.AFDM.MF.LC.S1.W.Mean.Adj-C8.AFDM.MF.LC.S2.W.Mean.Adj)##=-.0412874
+(d.C9.AFDM.MF.LC.S2.W.Mean.Adj<-0)##=0
+(d.C10.AFDM.MF.LC.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C10.AFDM.MF.LC.S2.W.Mean.Adj)##=-.005081269
+(d.C11.AFDM.MF.LC.S2.W.Mean.Adj<-0)##=0
+(d.C12.AFDM.MF.LC.S2.W.Mean.Adj<-0)##=0
+(d.C13.AFDM.MF.LC.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C13.AFDM.MF.LC.S2.W.Mean.Adj)##=-.01369166
+(d.C14.AFDM.MF.LC.S2.W.Mean.Adj<-d250.AFDM.MF.LC.S1.W.Mean.Adj-C14.AFDM.MF.LC.S2.W.Mean.Adj)##=.1714318
+(d.C15.AFDM.MF.LC.S2.W.Mean.Adj<-0)##=0
+(d.C16.AFDM.MF.LC.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C16.AFDM.MF.LC.S2.W.Mean.Adj)##=.00911852
+(d.C17.AFDM.MF.LC.S2.W.Mean.Adj<-d25.AFDM.MF.LC.S1.W.Mean.Adj-C17.AFDM.MF.LC.S2.W.Mean.Adj)##=.03393345
+
+##S3
+(d.C1.AFDM.MF.LC.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C1.AFDM.MF.LC.S3.W.Mean.Adj)##=.0949224
+(d.C2.AFDM.MF.LC.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C2.AFDM.MF.LC.S3.W.Mean.Adj)##=.01859965
+(d.C3.AFDM.MF.LC.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C3.AFDM.MF.LC.S3.W.Mean.Adj)##=.5381496
+(d.C4.AFDM.MF.LC.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C4.AFDM.MF.LC.S3.W.Mean.Adj)##=.04027796
+(d.C5.AFDM.MF.LC.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C5.AFDM.MF.LC.S3.W.Mean.Adj)##=.03805468
+(d.C6.AFDM.MF.LC.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C6.AFDM.MF.LC.S3.W.Mean.Adj)##=.04084226
+(d.C7.AFDM.MF.LC.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C7.AFDM.MF.LC.S3.W.Mean.Adj)##=.06512868
+(d.C8.AFDM.MF.LC.S3.W.Mean.Adj<-d125.AFDM.MF.LC.S2.W.Mean.Adj-C8.AFDM.MF.LC.S3.W.Mean.Adj)##=.04634956
+(d.C9.AFDM.MF.LC.S3.W.Mean.Adj<-0)##=0
+(d.C10.AFDM.MF.LC.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C10.AFDM.MF.LC.S3.W.Mean.Adj)##=-.01051816
+(d.C11.AFDM.MF.LC.S3.W.Mean.Adj<-0)##=0
+(d.C12.AFDM.MF.LC.S3.W.Mean.Adj<-0)##=0
+(d.C13.AFDM.MF.LC.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C13.AFDM.MF.LC.S3.W.Mean.Adj)##=.007696655
+(d.C14.AFDM.MF.LC.S3.W.Mean.Adj<-d250.AFDM.MF.LC.S2.W.Mean.Adj-C14.AFDM.MF.LC.S3.W.Mean.Adj)##=.6998596
+(d.C15.AFDM.MF.LC.S3.W.Mean.Adj<-0)##=0
+(d.C16.AFDM.MF.LC.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C16.AFDM.MF.LC.S3.W.Mean.Adj)##=.01655584
+(d.C17.AFDM.MF.LC.S3.W.Mean.Adj<-d25.AFDM.MF.LC.S2.W.Mean.Adj-C17.AFDM.MF.LC.S3.W.Mean.Adj)##=.04691386
+
+##S4
+(d.C1.AFDM.MF.LC.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C1.AFDM.MF.LC.S4.W.Mean.Adj)##=.6463948
+(d.C2.AFDM.MF.LC.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C2.AFDM.MF.LC.S4.W.Mean.Adj)##=.6655532
+(d.C3.AFDM.MF.LC.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C3.AFDM.MF.LC.S4.W.Mean.Adj)##=.7589506
+(d.C4.AFDM.MF.LC.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C4.AFDM.MF.LC.S4.W.Mean.Adj)##=.667948
+(d.C5.AFDM.MF.LC.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C5.AFDM.MF.LC.S4.W.Mean.Adj)##=1.304764
+(d.C6.AFDM.MF.LC.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C6.AFDM.MF.LC.S4.W.Mean.Adj)##=.1374213
+(d.C7.AFDM.MF.LC.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C7.AFDM.MF.LC.S4.W.Mean.Adj)##=.1326317
+(d.C8.AFDM.MF.LC.S4.W.Mean.Adj<-d125.AFDM.MF.LC.S3.W.Mean.Adj-C8.AFDM.MF.LC.S4.W.Mean.Adj)##=.655974
+(d.C9.AFDM.MF.LC.S4.W.Mean.Adj<-0)##=0
+(d.C10.AFDM.MF.LC.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C10.AFDM.MF.LC.S4.W.Mean.Adj)##=1.247288
+(d.C11.AFDM.MF.LC.S4.W.Mean.Adj<-0)##=0
+(d.C12.AFDM.MF.LC.S4.W.Mean.Adj<-0)##=0
+(d.C13.AFDM.MF.LC.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C13.AFDM.MF.LC.S4.W.Mean.Adj)##=1.194603
+(d.C14.AFDM.MF.LC.S4.W.Mean.Adj<-d250.AFDM.MF.LC.S3.W.Mean.Adj-C14.AFDM.MF.LC.S4.W.Mean.Adj)##=1.436478
+(d.C15.AFDM.MF.LC.S4.W.Mean.Adj<-0)##=0
+(d.C16.AFDM.MF.LC.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C16.AFDM.MF.LC.S4.W.Mean.Adj)##=.1517901
+(d.C17.AFDM.MF.LC.S4.W.Mean.Adj<-d25.AFDM.MF.LC.S3.W.Mean.Adj-C17.AFDM.MF.LC.S4.W.Mean.Adj)##=.1517901
+
+
+##as a table?
+tapply(response, list(rows, columns), function)
+tapply(AFDM, list(Lake/Date/CageID, Estimated MF BiomassStart), function(x)adj mean*starting density)
+tapply(AFDM, list(Lake/Date/CageID, Estimated MF BiomassEnd), function(x)adj mean*MFCount @ sample)
+tapply(AFDM, list(Lake/Date/CageID, Estimated MF BiomassChange), function(x)BiomassEnd-BiomassStart)
+
+####
+MeanMFBiomass.Cage<-tapply(AFDM, Cage., mean)
+
+
+
+
+
+
+
+
+LargeCR<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+
+LC<-which(LakeID==10102)
+Sp<-which(LakeID==10475)
+LargeCR$MFEstBmSt.LC<-LargeCR$MFCount[LC]*2.533582

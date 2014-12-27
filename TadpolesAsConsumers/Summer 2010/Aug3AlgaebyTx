@@ -1,0 +1,12 @@
+detach()
+rm(list=ls())
+
+Aug3Algae<-read.csv("C:\\Users\\thsmith\\Desktop\\Summer 2010\\3AugAlgae.csv")
+str(Aug3Algae)
+attach(Aug3Algae)
+Aug3Algae$MFDensF<-as.factor(Aug3Algae$MFDens)
+Aug3Algae$TadDensF<-as.factor(Aug3Algae$TadDens)
+
+plot(TadDensF, AFDM)
+plot(MFDensF, AFDM)
+plot(TxType, AFDM)

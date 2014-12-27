@@ -1,0 +1,29 @@
+detach()
+rm(list=ls())
+
+MesoTadNutr<-read.csv("C:\\Users\\thsmith\\Desktop\\Summer 2010\\TadDensNutr.csv", header=T)
+str(MesoTadNutr)
+attach(MesoTadNutr)
+MesoTadNutr<-MesoTadNutr[-11]
+MesoTadNutr$TDensF<-as.factor(TadpoleDensity)
+plot(TDensF, Ammonia)
+NoTad<-which(TadpoleDensity==0)
+Tad<-which(TadpoleDensity==16)
+par(mfrow=c(1,2))
+hist(Ammonia[Tad])#not normal
+hist(Ammonia[NoTad])#not normal, but similarly shaped
+hist(Ammonia[Tad]-Ammonia[NoTad])#appx normal
+var(Ammonia[Tad])#0.754
+var(Ammonia[NoTad])#0.366, variances are similar
+t.test(Ammonia~TDensF)
+#
+#        Welch Two Sample t-test
+#
+#data:  Ammonia by TDensF 
+#t = -5.1114, df = 110.918, p-value = 1.345e-06
+#alternative hypothesis: true difference in means is not equal to 0 
+#95 percent confidence interval:
+# -0.9506227 -0.4194684 
+#sample estimates:
+# mean in group 0 mean in group 16 
+#       0.6460656        1.3311111 

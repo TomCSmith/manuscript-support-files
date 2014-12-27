@@ -1,0 +1,15 @@
+detach()
+rm(list=ls())
+
+DAGNC<-read.csv("C:\\Users\\thsmith\\Desktop\\2010MesocosmCSVdata\\DailyAlgaeGrowthNoConsumers.csv", header=T)
+str(DAGNC)
+attach(DAGNC)
+TankF<-as.factor(TankNumber)
+TileF<-as.factor(TileNumber)
+DaysF<-as.factor(GrowthPeriod)
+
+par(mfrow=c(1,2))
+plot(DaysF, AFDM, main="Total Algal Growth", xlab="Day", ylab="total g AFDM")
+plot(DaysF, AFDMperMperD, main="per square meter Algal Growth Rate", xlab="Day", ylab="g AFDM / m^2 / days")
+
+

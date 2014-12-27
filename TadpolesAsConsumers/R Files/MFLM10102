@@ -1,0 +1,33 @@
+MFLM<-read.csv(H:\Consumer-Resource Experiment 2009\MFLM10102.csv, header=T)
+head(MFLM)
+str(MFLM)
+attach(MFLM)
+
+MFLM$cagef<-as.factor(MFLM$Cage.)
+
+plot(MFLength, AFDM)
+abline(lm(AFDM~MFLength, date=MFLM))
+LMlm<-lm(AFDM~MFLength, data=MFLM)
+LMlm
+
+Jul15<-which(MFLM$SampleDate=="15-Jul-09")
+Aug24<-which(MFLM$SampleDate=="24-Aug-09")
+Aug1<-which(MFLM$SampleDate=="1-Aug-09")
+Sep12<-which(MFLM$SampleDate=="12-Sep-09")
+
+plot(MFLength[Jul15], AFDM[Jul15], col="black")
+points(MFLength[Aug1], AFDM[Aug1], col="blue")
+points(MFLength[Aug24], AFDM[Aug24], col="green")
+points(MFLength[Sep12], AFDM[Sep12], col="brown")
+
+
+abline(lm(AFDM[Jul15]~MFLength[Jul15], data=MFLM), col="black")
+abline(lm(AFDM[Aug1]~MFLength[Aug1], data=MFLM), col="blue")
+abline(lm(AFDM[Aug24]~MFLength[Aug24], data=MFLM), col="green")
+abline(lm(AFDM[Sep12]~MFLength[Sep12], data=MFLM), col="brown")
+
+Aug.1.lm<-lm(AFDM[Aug.1]~length[Aug.1], data=MFLM)
+Aug.1.lm
+
+Aug.24.lm<-lm(AFDM[Aug.24]~length[Aug.24], data=MFLM)
+Aug.24.lm

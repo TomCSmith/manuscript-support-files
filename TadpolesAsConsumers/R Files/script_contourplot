@@ -1,0 +1,11 @@
+install.packages("akima")
+library(akima)
+
+Spur3AWBD<-read.csv(file.choose(), header=T)
+attach(Spur3AWBD)
+names(Spur3AWBD)
+str(Spur3AWBD)
+
+zz<-interp(TadDens,MFDens,Spur20Sep, duplicate="mean")
+image(zz,col=topo.colors(12),xlab="TadDens",ylab="MFDens")
+contour(zz, add=T)

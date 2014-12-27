@@ -1,0 +1,229 @@
+LCAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10102AWBD.csv", header=T)
+##dates: "LeConte2Aug"  "LeConte24Aug" "LeConte12Sep"
+par(mfrow=c(3,2))
+
+M0<-which(LCAWBD$MFDens==0)
+d1<-LCAWBD$TadDens[M0]
+d2<-LCAWBD$LeConte2Aug[M0]
+o1<-order(d1)
+o2<-order(d2)
+plot(d1[o1],d2[o2], col="red", pch=16, xlab="tad dens", ylab="algal growth rate", ylim=c(0,0.0005))
+lines(d1[o1],d2[o2], col="red")
+text(10,0.00045, "MF0=red", pos=2)
+
+M25<-which(LCAWBD$MFDens==25)
+e1<-LCAWBD$TadDens[M25]
+e2<-LCAWBD$LeConte2Aug[M25]
+p1<-order(e1)
+p2<-order(e2)
+points(e1[p1],e2[p2], col="black", pch=16)
+lines(e1[p1],e2[p2], col="black")
+text(10,0.00042, "MF25=black", pos=2)
+
+M125<-which(LCAWBD$MFDens==125)
+f1<-LCAWBD$TadDens[M125]
+f2<-LCAWBD$LeConte2Aug[M125]
+q1<-order(f1)
+q2<-order(f2)
+points(f1[q1],f2[q2], col="blue", pch=16)
+lines(f1[q1],f2[q2], col="blue")
+text(10,.00039, "MF125=blue", pos=2)
+
+M250<-which(LCAWBD$MFDens==250)
+g1<-LCAWBD$TadDens[M250]
+g2<-LCAWBD$LeConte2Aug[M250]
+r1<-order(g1)
+r2<-order(g2)
+points(g1[r1],g2[r2], col="green", pch=16)
+lines(g1[r1],g2[r2], col="green")
+text(10,0.00036, "MF250=grrrn", pos=2)
+
+
+T0<-which(LCAWBD$TadDens==0)
+dd1<-LCAWBD$MFDens[T0]
+dd2<-LCAWBD$LeConte2Aug[T0]
+oo1<-order(dd1)
+oo2<-order(dd2)
+plot(dd1[oo1],dd2[oo2], col="red", pch=16, xlab="MF dens", ylab="algal growth rate", ylim=c(0,0.0005))
+lines(dd1[oo1],dd2[oo2], col="red")
+text(100,0.00045, "T0=red", pos=2)
+
+T2<-which(LCAWBD$TadDens==2)
+ee1<-LCAWBD$MFDens[T2]
+ee2<-LCAWBD$LeConte2Aug[T2]
+pp1<-order(ee1)
+pp2<-order(ee2)
+points(ee1[pp1],ee2[pp2], col="black", pch=16)
+lines(ee1[pp1],ee2[pp2], col="black")
+text(100,0.00042, "T2=black", pos=2)
+
+T10<-which(LCAWBD$TadDens==10)
+ff1<-LCAWBD$MFDens[T10]
+ff2<-LCAWBD$LeConte2Aug[T10]
+qq1<-order(ff1)
+qq2<-order(ff2)
+points(ff1[qq1],ff2[qq2], col="blue", pch=16)
+lines(ff1[qq1],ff2[qq2], col="blue")
+text(100,.00039, "T10=blue", pos=2)
+
+T20<-which(LCAWBD$TadDens==20)
+gg1<-LCAWBD$MFDens[T20]
+gg2<-LCAWBD$LeConte2Aug[T20]
+rr1<-order(gg1)
+rr2<-order(gg2)
+points(gg1[rr1],gg2[rr2], col="green", pch=16)
+lines(gg1[rr1],gg2[rr2], col="green")
+text(100,0.00036, "T20=grrrn", pos=2)
+
+
+##date "LeConte24Aug"  
+
+M0<-which(LCAWBD$MFDens==0)
+d1<-LCAWBD$TadDens[M0]
+d2<-LCAWBD$LeConte24AugM0]
+o1<-order(d1)
+o2<-order(d2)
+plot(d1[o1],d2[o2], col="red", pch=16, xlab="tad dens", ylab="algal growth rate", ylim=c(0,0.0005))
+lines(d1[o1],d2[o2], col="red")
+text(10,0.00045, "MF0=red", pos=2)
+
+M25<-which(LCAWBD$MFDens==25)
+e1<-LCAWBD$TadDens[M25]
+e2<-LCAWBD$LeConte24Aug[M25]
+p1<-order(e1)
+p2<-order(e2)
+points(e1[p1],e2[p2], col="black", pch=16)
+lines(e1[p1],e2[p2], col="black")
+text(10,0.00042, "MF25=black", pos=2)
+
+M125<-which(LCAWBD$MFDens==125)
+f1<-LCAWBD$TadDens[M125]
+f2<-LCAWBD$ LeConte24Aug [M125]
+q1<-order(f1)
+q2<-order(f2)
+points(f1[q1],f2[q2], col="blue", pch=16)
+lines(f1[q1],f2[q2], col="blue")
+text(10,.00039, "MF125=blue", pos=2)
+
+M250<-which(LCAWBD$MFDens==250)
+g1<-LCAWBD$TadDens[M250]
+g2<-LCAWBD$ LeConte24Aug [M250]
+r1<-order(g1)
+r2<-order(g2)
+points(g1[r1],g2[r2], col="green", pch=16)
+lines(g1[r1],g2[r2], col="green")
+text(10,0.00036, "MF250=grrrn", pos=2)
+
+
+T0<-which(LCAWBD$TadDens==0)
+dd1<-LCAWBD$MFDens[T0]
+dd2<-LCAWBD$ LeConte24Aug [T0]
+oo1<-order(dd1)
+oo2<-order(dd2)
+plot(dd1[oo1],dd2[oo2], col="red", pch=16, xlab="MF dens", ylab="algal growth rate", ylim=c(0,0.0005))
+lines(dd1[oo1],dd2[oo2], col="red")
+text(100,0.00045, "T0=red", pos=2)
+
+T2<-which(LCAWBD$TadDens==2)
+ee1<-LCAWBD$MFDens[T2]
+ee2<-LCAWBD$ LeConte24Aug [T2]
+pp1<-order(ee1)
+pp2<-order(ee2)
+points(ee1[pp1],ee2[pp2], col="black", pch=16)
+lines(ee1[pp1],ee2[pp2], col="black")
+text(100,0.00042, "T2=black", pos=2)
+
+T10<-which(LCAWBD$TadDens==10)
+ff1<-LCAWBD$MFDens[T10]
+ff2<-LCAWBD$ LeConte24Aug [T10]
+qq1<-order(ff1)
+qq2<-order(ff2)
+points(ff1[qq1],ff2[qq2], col="blue", pch=16)
+lines(ff1[qq1],ff2[qq2], col="blue")
+text(100,.00039, "T10=blue", pos=2)
+
+T20<-which(LCAWBD$TadDens==20)
+gg1<-LCAWBD$MFDens[T20]
+gg2<-LCAWBD$ LeConte24Aug [T20]
+rr1<-order(gg1)
+rr2<-order(gg2)
+points(gg1[rr1],gg2[rr2], col="green", pch=16)
+lines(gg1[rr1],gg2[rr2], col="green")
+text(100,0.00036, "T20=grrrn", pos=2)
+
+
+##date3 "LeConte12Sep"
+
+M0<-which(LCAWBD$MFDens==0)
+d1<-LCAWBD$TadDens[M0]
+d2<-LCAWBD$ LeConte12Sep [M0]
+o1<-order(d1)
+o2<-order(d2)
+plot(d1[o1],d2[o2], col="red", pch=16, xlab="tad dens", ylab="algal growth rate", ylim=c(0,0.0005))
+lines(d1[o1],d2[o2], col="red")
+text(10,0.00045, "MF0=red", pos=2)
+
+M25<-which(LCAWBD$MFDens==25)
+e1<-LCAWBD$TadDens[M25]
+e2<-LCAWBD$LeConte2Aug[M25]
+p1<-order(e1)
+p2<-order(e2)
+points(e1[p1],e2[p2], col="black", pch=16)
+lines(e1[p1],e2[p2], col="black")
+text(10,0.00042, "MF25=black", pos=2)
+
+M125<-which(LCAWBD$MFDens==125)
+f1<-LCAWBD$TadDens[M125]
+f2<-LCAWBD$ LeConte12Sep [M125]
+q1<-order(f1)
+q2<-order(f2)
+points(f1[q1],f2[q2], col="blue", pch=16)
+lines(f1[q1],f2[q2], col="blue")
+text(10,.00039, "MF125=blue", pos=2)
+
+M250<-which(LCAWBD$MFDens==250)
+g1<-LCAWBD$TadDens[M250]
+g2<-LCAWBD$ LeConte12Sep [M250]
+r1<-order(g1)
+r2<-order(g2)
+points(g1[r1],g2[r2], col="green", pch=16)
+lines(g1[r1],g2[r2], col="green")
+text(10,0.00036, "MF250=grrrn", pos=2)
+
+
+T0<-which(LCAWBD$TadDens==0)
+dd1<-LCAWBD$MFDens[T0]
+dd2<-LCAWBD$ LeConte12Sep [T0]
+oo1<-order(dd1)
+oo2<-order(dd2)
+plot(dd1[oo1],dd2[oo2], col="red", pch=16, xlab="MF dens", ylab="algal growth rate", ylim=c(0,0.0005))
+lines(dd1[oo1],dd2[oo2], col="red")
+text(100,0.00045, "T0=red", pos=2)
+
+T2<-which(LCAWBD$TadDens==2)
+ee1<-LCAWBD$MFDens[T2]
+ee2<-LCAWBD$ LeConte12Sep [T2]
+pp1<-order(ee1)
+pp2<-order(ee2)
+points(ee1[pp1],ee2[pp2], col="black", pch=16)
+lines(ee1[pp1],ee2[pp2], col="black")
+text(100,0.00042, "T2=black", pos=2)
+
+T10<-which(LCAWBD$TadDens==10)
+ff1<-LCAWBD$MFDens[T10]
+ff2<-LCAWBD$ LeConte12Sep [T10]
+qq1<-order(ff1)
+qq2<-order(ff2)
+points(ff1[qq1],ff2[qq2], col="blue", pch=16)
+lines(ff1[qq1],ff2[qq2], col="blue")
+text(100,.00039, "T10=blue", pos=2)
+
+T20<-which(LCAWBD$TadDens==20)
+gg1<-LCAWBD$MFDens[T20]
+gg2<-LCAWBD$ LeConte12Sep [T20]
+rr1<-order(gg1)
+rr2<-order(gg2)
+points(gg1[rr1],gg2[rr2], col="green", pch=16)
+lines(gg1[rr1],gg2[rr2], col="green")
+text(100,0.00036, "T20=grrrn", pos=2)
+

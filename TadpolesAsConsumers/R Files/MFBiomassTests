@@ -1,0 +1,213 @@
+##clear old data frames, vectors, etc
+rm(list=ls())
+detach()
+
+##Script for basic statistical tests on MFBiomass data
+
+MFBiomass<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\MFBiomass.csv", header=T)
+MFBiomass<-read.csv("G:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+
+names(MFBiomass)
+MFBiomass$LakeIDF<-as.factor(MFBiomass$LakeID)
+attach(MFBiomass)
+str(MFBiomass)
+
+####define vectors for different comparisons
+##species:
+MF.C.S4<-which(GenusSpp=="Callibaetis spp." & Cage.==0 & (SampleDate=="12-Sep-09"|SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+MF.A.S4<-which(GenusSpp=="Ameletus spp." & Cage.==0 & (SampleDate=="12-Sep-09"|SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+
+##lake:
+MF.Sp.S4<-which(LakeID=="10475" & Cage.==0 & (SampleDate=="12-Sep-09"|SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+MF.LC.S4<-which(LakeID=="10102" & Cage.==0 & (SampleDate=="12-Sep-09"|SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+
+
+##Separated by Date
+MF.S1<-which(Cage.==0 & (SampleDate=="20-Jul-09"|SampleDate=="15-Jul-09"))
+MF.S2<-which(Cage.==0 & (SampleDate=="12-Aug-09"|SampleDate=="1-Aug-09"))
+MF.S3<-which(Cage.==0 & (SampleDate=="31-Aug-09"|SampleDate=="24-Aug-09"))
+MF.S4<-which(Cage.==0 & (SampleDate=="20-Sep-09"|SampleDate=="12-Sep-09"|SampleDate=="21-Sep-09"))
+
+
+##10475_Ameletus, each date
+MF.Sp.A.S1<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="20-Jul-09")
+MF.Sp.A.S2<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="12-Aug-09")
+MF.Sp.A.S3<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="31-Aug-09")
+MF.Sp.A.S4<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & (SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+
+##10102, Ameletus, each date
+MF.LC.A.S1<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="15-Jul-09")
+MF.LC.A.S2<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="1-Aug-09")
+MF.LC.A.S3<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="24-Aug-09")
+MF.LC.A.S4<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="12-Sep-09")
+
+##Final Survey Date
+MF.Wild.S4<-which(Cage.==0 & (SampleDate=="12-Sep-09" | SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+MF.Cage.S4<-which(Cage.!=0 & (SampleDate=="12-Sep-09" | SampleDate=="20-Sep-09"|SampleDate=="21-Sep-09"))
+
+
+
+####Basic Plots
+##plot of AFDM (response), boxplot of AFDM, histogram of AFDM, and plot of AFDM against MFLength (predictor)
+par(mfrow=c(2,2))
+plot(AFDM)
+boxplot(AFDM)
+hist(AFDM,main="")
+plot(MFLength, AFDM)
+##plot of Separate Spp
+plot(AFDM[MF.A.S4], col="blue", xlim=c(0,50), ylim=c(0, 0.01))
+points(AFDM[MF.C.S4], col="black")
+##plot of separate lakes
+plot(AFDM[MF.LC.S4], col="blue")
+points(AFDM[MF.Sp.S4], col="black")
+##plot of separate dates
+plot(AFDM[MF.S1], col="black", pch=20)
+points(AFDM[MF.S2], col="blue", pch=2)
+points(AFDM[MF.S3], col=6, pch=16)
+points(AFDM[MF.S4], col=3, pch=15)
+##plot of wild v. cage, @ final date
+plot(AFDM[MF.Wild.S4], col=1, pch=16)
+points(AFDM[MF.Cage.S4], col=4, pch=16)
+
+##further exploratory plots: sample 4 cage and wild, with lm regressions plotted and mean MFLength and AFDM for each plotted
+plot(MFLength[MF.Cage.S4], AFDM[MF.Cage.S4], col=1)
+points(MFLength[MF.Wild.S4], AFDM[MF.Wild.S4], col=4)
+abline(lm(AFDM[MF.Cage.S4]~MFLength[MF.Cage.S4]), col=1)
+abline(lm(AFDM[MF.Wild.S4]~MFLength[MF.Wild.S4]), col=4)
+mean(MFLength[MF.Cage.S4])##8.728571
+mean(AFDM[MF.Cage.S4])##.002394805
+mean(MFLength[MF.Wild.S4])##5.87851
+mean(AFDM[MF.Wild.S4])##.001196429
+points(mean(MFLength[MF.Cage.S4]), mean(AFDM[MF.Cage.S4]), col=1, pch=17)
+points(mean(MFLength[MF.Wild.S4]), mean(AFDM[MF.Wild.S4]), col=4, pch=17)
+
+
+####basic summary of AFDM data
+summary(AFDM)
+##    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##0.000000 0.000500 0.001400 0.001661 0.002400 0.008800  
+
+####Test for Normality of AFDM data (Install Stats and Lattice pkgs)
+qqnorm(AFDM)
+qqline(AFDM, lty=2)
+shapiro.test(AFDM)
+        Shapiro-Wilk normality test
+
+data:  AFDM 
+W = 0.9079, p-value = 1.442e-15
+##so, AFDM data is non-normal.
+
+shapiro.test(AFDM[MF.Cage.S4])
+
+####
+
+####Wilcoxon signed-rank test for differences in means with non-normal data
+wilcox.test(AFDM, mu=[insert test mean here])
+wilcox.test(AFDM[MF.Sp], mu=.002064045)
+wilcox.test(AFDM[MF.LC], mu=.001064286)
+wilcox.test(AFDM[MF.A], mu=.001918782)
+wilcox.test(AFDM[MF.C], mu=.001186076)
+wilcox.test(AFDM[MF.Wild.S4], mu=.002394805)
+wilcox.test(AFDM[MF.Cage.S4], mu=.001196429)
+##is this appropriate use of test and means?
+
+####bootstrap
+##bootstrap whole sample (probably unnecessary)
+a<-numeric(10000)
+for(i in 1:10000) a[i]<-mean(sample(AFDM, replace=T))
+hist(a, main="")
+
+summary(a)
+##    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##0.001420 0.001617 0.001659 0.001660 0.001702 0.001912 
+
+##Bootstrap Wild Sample 4
+summary(AFDM[MF.Wild.S4])
+##     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##0.0000000 0.0003250 0.0005000 0.0009603 0.0009000 0.0043000 
+b<-numeric(10000)
+for(i in 1:10000) b[i]<-mean(sample(AFDM[MF.Wild.S4], replace=T))
+hist(b, main="")
+summary(b)
+##     Min.   1st Qu.    Median      Mean   3rd Qu.      Max. 
+##0.0005293 0.0008690 0.0009569 0.0009607 0.0010480 0.0015220 
+
+##Bootstrap Cage Sample 4
+summary(AFDM[MF.Cage.S4])
+##    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##0.000000 0.000500 0.001300 0.001784 0.002650 0.008800 
+c<-numeric(10000)
+for(i in 1:10000) c[i]<-mean(sample(AFDM[MF.Cage.S4], replace=T))
+hist(c, main="")
+summary(c)
+##    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+##0.001312 0.001693 0.001784 0.001786 0.001875 0.002389 
+
+####
+##Crawley's Skew Function:
+skew<-function(x){
+m3<-sum((x-mean(x))^3)/length(x)
+s3<-sqrt(var(x))^3
+m3/s3}
+##skew of whole sample
+skew(AFDM+1)
+skew(AFDM+1)/sqrt(6/length(AFDM+1))
+1-pt(5.13153,352)
+##p=2.38e-07; so again, shows significant non-normality (with a t-test???)
+##sqrt transform
+skew(sqrt(AFDM+1))/sqrt(6/length(AFDM+1))
+1-pt( -1.085544,352)
+##p=.8607; sqrt transform not significantly skew, may be normal?
+##log transform
+skew(log(AFDM+1))/sqrt(6/length(AFDM+1))
+1-pt(5.109859,352)
+##p=2.65e-07; so log transform does not make it normal.
+
+####Two Sample Tests 
+##of AFDM
+var(AFDM[MF.Wild.S4])
+var(AFDM[MF.Cage.S4])
+var(AFDM[MF.Wild.S4])/var(AFDM[MF.Cage.S4])##=.4656304
+length(AFDM[MF.Wild.S4])##=58
+length(AFDM[MF.Cage.S4])##=77
+##df=57+125-2=132
+qf(.975, 57,125)##=1.534 > 1.020114=var(AFDM[MF.Cage.S4])/var(AFDM[MF.Wild.S4]); so the sample variances are not sig. diff.
+
+##of MFLength
+F.Ratio.MFWildvCage.S4<-var(MFLength[MF.Wild.S4])/var(MFLength[MF.Cage.S4])
+F.Ratio.MFWildvCage.S4##=.754081
+length(MFLength[MF.Wild.S4])##=58
+length(MFLength[MF.Cage.S4])##=77
+##df=58+77-2=132
+qf(.975, 58,125)##=1.53 > .754081 = MW4Var/MC4Var; so the variances are not sig. diff.
+2*(1-pf(F.Ratio.MFWildvCage.S4,58,125))##=1.77
+##Variances are not different, so can compare with Student t-test
+
+##Test of AFDMs from Cage and Wild, and MFLength too.
+AFDM.CW.S4<-c(AFDM[MF.Cage.S4], AFDM[MF.Wild.S4])
+label<-factor(c(rep("Cage", 128),rep("Wild", 58)))
+boxplot(AFDM.CW.S4~label, notch=T, xlab="Cage or Wild", ylab="AFDM")##boxplot indicates that sample means are sig. diff. at 5% level.
+
+t.test(AFDM[MF.Cage.S4], AFDM[MF.Wild.S4])##p=.000264, reject null hypothesis, means are sig. diff.
+##        Welch Two Sample t-test
+##
+##data:  AFDM[MF.Cage.S4] and AFDM[MF.Wild.S4] 
+##t = 4.323, df = 155.728, p-value = 2.736e-05
+##alternative hypothesis: true difference in means is not equal to 0 
+##95 percent confidence interval:
+## 0.0004475023 0.0012005580 
+##sample estimates:
+##   mean of x    mean of y 
+##0.0017843750 0.0009603448 
+
+
+
+wilcox.test(AFDM[MF.Cage.S4], AFDM[MF.Wild.S4])##p=.0001316, so reject null hypthesis,, means are sig. diff.
+##data:  AFDM[MF.Cage.S4] and AFDM[MF.Wild.S4] 
+##W = 5080.5, p-value = 5.595e-05
+##alternative hypothesis: true location shift is not equal to 0 
+
+
+0.0017843750/0.0009603448##=1.858 means differ by a factor of nearly two, with that of the caged mayflies being larger - is this intuitive?
+
+##***next step is to separate the two lakes and/or species within the cage/wild samples to see if there are cage-lake v. wild-lake differences.

@@ -1,0 +1,60 @@
+detach()
+rm(list=ls())
+
+MFBiomass<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\MFLengthMass17Mar10.csv", header=T)
+attach(MFBiomass)
+str(MFBiomass)
+MFBiomass$CageNum<-as.factor(Cage.)
+LC<-which(LakeID==10102)
+Sp<-which(LakeID==10475)
+Excl<-which(AFDM==.0086)
+LC.S4<-which(LakeID==10102 & SampleDate=="12-Sep-09")
+Sp.S4.Am.Excl<-which(LakeID==10475 & (SampleDate=="20-Sep-09" | SampleDate=="21-Sep-09") & GenusSpp=="Ameletus spp." & AFDM!=.0086)
+Sp.S4.Ca.Excl<-which(LakeID==10475 & (SampleDate=="20-Sep-09" | SampleDate=="21-Sep-09") & GenusSpp=="Callibaetis spp." & AFDM!=.0086)
+S4.Excl<-which((SampleDate=="20-Sep-09" | SampleDate=="21-Sep-09" | SampleDate=="12-Sep-09") & AFDM!=.0086)
+plot(CageNum[LC], AFDM[LC])
+
+##plots display well the relationships within lakes
+par(mfrow=c(2,2))
+boxplot(AFDM[S4.Excl]~MFDensNum[S4.Excl], ylim=c(0,.005), ylab="AFDM", xlab="MF Density (0 indicates wild mayflies)", main="Both lakes, Sample 4, both MF spp.")
+boxplot(AFDM[LC.S4]~MFDensNum[LC.S4], ylim=c(0,.005), main="LeConte, Sample 4, Ameletus")
+boxplot(AFDM[Sp.S4.Am.Excl]~MFDensNum[Sp.S4.Am.Excl], ylim=c(0,.005), main="Spur, Sample 4, Ameletus only")
+boxplot(AFDM[Sp.S4.Ca.Excl]~MFDensNum[Sp.S4.Ca.Excl], ylim=c(0,.005), main="Spur, Sample 4, Callibaetis only")
+
+##log scale - not especially more informative
+boxplot(log(AFDM[S4.Excl]+.001)~MFDensNum[S4.Excl],ylim=c(-7, -5) ,ylab="log(AFDM+.001)", xlab="MF Density (0 indicates wild mayflies)", main="Both lakes, Sample 4, both MF spp.")
+boxplot(log(AFDM[LC.S4]+.001)~MFDensNum[LC.S4],ylim=c(-7, -5)  ,main="LeConte, Sample 4, Ameletus")
+boxplot(log(AFDM[Sp.S4.Am.Excl]+.001)~MFDensNum[Sp.S4.Am.Excl],ylim=c(-7, -5) ,  main="Spur, Sample 4, Ameletus only")
+boxplot(log(AFDM[Sp.S4.Ca.Excl]+.001)~MFDensNum[Sp.S4.Ca.Excl],ylim=c(-7, -5) ,  main="Spur, Sample 4, Callibaetis only")
+
+
+####Numbers in Samples:
+####total MFs captured per lake, number of each spp. per lake, change in composition over time
+MF.Sp.W.Ca<-which(LakeID==10475 & Cage.==0 & GenusSpp=="Callibaetis spp.")
+MF.Sp.W.Am<-which(LakeID==10475 & Cage.==0 & GenusSpp=="Ameletus spp.")
+
+MF.W.LC.Ca<-which(LakeID==10102 & Cage.==0 & GenusSpp=="Callibaetis spp.")
+MF.W.LC.Am<-which(LakeID==10102 & Cage.==0 & GenusSpp=="Ameletus spp.")
+
+length(MF.Sp.W.Ca)##=94
+length(MF.Sp.W.Am)##=34
+length(MF.W.LC.Ca)##=1
+length(MF.W.LC.Am)##=178
+
+##Seasonal change in detectability of mayfly species
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & SampleDate=="20-Jul-09" & Cage.==0 & GenusSpp=="Callibaetis spp."))##=32
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & SampleDate=="12-Aug-09" & Cage.==0 & GenusSpp=="Callibaetis spp."))##=28
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & SampleDate=="31-Aug-09" & Cage.==0 & GenusSpp=="Callibaetis spp."))##=18
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & (SampleDate=="20-Sep-09" | SampleDate=="21-Sep-09") & Cage.==0 & GenusSpp=="Callibaetis spp."))##=16
+
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & SampleDate=="20-Jul-09" & Cage.==0 & GenusSpp=="Ameletus spp."))##=0
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & SampleDate=="12-Aug-09" & Cage.==0 & GenusSpp=="Ameletus spp."))##=2
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & SampleDate=="31-Aug-09" & Cage.==0 & GenusSpp=="Ameletus spp."))##=18
+length(MF.S1.Sp.W.Ca<-which(LakeID==10475 & (SampleDate=="20-Sep-09" | SampleDate=="21-Sep-09") & Cage.==0 & GenusSpp=="Ameletus spp."))##=14
+
+length(MF.S1.Sp.W.Ca<-which(LakeID==10102 & SampleDate=="15-Jul-09" & Cage.==0 & GenusSpp=="Callibaetis spp."))##=0
+length(MF.S1.Sp.W.Ca<-which(LakeID==10102 & SampleDate=="1-Aug-09" & Cage.==0 & GenusSpp=="Callibaetis spp."))##=0
+length(MF.S1.Sp.W.Ca<-which(LakeID==10102 & SampleDate=="24-Aug-09" & Cage.==0 & GenusSpp=="Callibaetis spp."))##=0
+length(MF.S1.Sp.W.Ca<-which(LakeID==10102 & (SampleDate=="12-Sep-09") & Cage.==0 & GenusSpp=="Callibaetis spp."))##=1
+
+

@@ -1,0 +1,28 @@
+Large<-read.csv(file.choose(), header=T)
+
+dotchart(Large$TadDens,
+groups = numeric(Large$SampleDate),
+ylab = "Alg Grow Rate / m2", xlab = "TadDens",
+main = "Cleveland dotplot", pch = Large$AGRperM.2)
+
+AWBD<-read.csv(file.choose(), header=T)
+pairs(AWBD
+
+par(mfrow=c(1,1))
+lake<-which(Large$LakeID==10102)
+boxplot(AGRperM.2[lake] ~ factor(TadDens[lake]),
+varwidth = TRUE, xlab = "TadDens",
+main = "10102", ylab = "Algal perday GrowthRate per m2", data = Large)
+
+boxplot(AGRperM.2[lake] ~ factor(MFDens[lake]),
+varwidth = TRUE, xlab = "MFDens",
+main = "10102", ylab = "Algal perday GrowthRate per m2", data = Large)
+
+lake2<-which(Large$LakeID==10475)
+boxplot(AGRperM.2[lake2] ~ factor(TadDens[lake2]),
+varwidth = TRUE, xlab = "TadDens",
+main = "10475", ylab = "Algal perday GrowthRate per m2", data = Large)
+
+boxplot(AGRperM.2[lake2] ~ factor(MFDens[lake2]),
+varwidth = TRUE, xlab = "MFDens",
+main = "10475", ylab = "Algal perday GrowthRate per m2", data = Large)

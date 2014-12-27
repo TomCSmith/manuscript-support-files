@@ -1,0 +1,57 @@
+rm(list=ls())
+detach()
+
+LargeCR<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+LargeCR<-read.csv("H:\\Consumer-Resource Experiment 2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+
+str(LargeCR)
+attach(LargeCR)
+
+LC<-which(LakeID==10102)
+Sp<-which(LakeID==10475)
+Exptal<-which(CageID=="1"|CageID=="2"|CageID=="3"|CageID=="4"|CageID=="5"|CageID=="6"|CageID=="7"|CageID=="8"|CageID=="9"|CageID=="10"|
+CageID=="11"|CageID=="12"|CageID=="13"|CageID=="14"|CageID=="15"|CageID=="16"|CageID=="17")
+
+LC.E<-which(LakeID==10102 & (CageID=="1"|CageID=="2"|CageID=="3"|CageID=="4"|CageID=="5"|CageID=="6"|CageID=="7"|CageID=="8"|CageID=="9"|CageID=="10"|
+CageID=="11"|CageID=="12"|CageID=="13"|CageID=="14"|CageID=="15"|CageID=="16"|CageID=="17"))
+
+Sp.E<-which(LakeID==10475 & (CageID=="1"|CageID=="2"|CageID=="3"|CageID=="4"|CageID=="5"|CageID=="6"|CageID=="7"|CageID=="8"|CageID=="9"|CageID=="10"|
+CageID=="11"|CageID=="12"|CageID=="13"|CageID=="14"|CageID=="15"|CageID=="16"|CageID=="17"))
+
+
+####Effects of Tadpole on EGR: Dens, WtStart, WtEnd, WtChg
+
+NoMF<-which(MFDens==0)
+(summary(EGR.TadDens.lm<-lm(EGRperM.2~TadDens))
+(summary(EGR.TadDens.LC.lm<-lm(EGRperM.2[LC][NoMF]~TadDens[LC][NoMF])))##TadDens alone does not predict EGR in LeConte
+(summary(EGR.TadDens.Sp.lm<-lm(EGRperM.2[Sp][NoMF]~TadDens[Sp][NoMF])))##variation is poorly explained by data (adj rsq=.0546), but data are <90% probably by chance (p=.0543)
+
+(summary(EGR.TadWtStart.LC.lm<-lm(EGRperM.2[LC]~TadWtStart[LC])))##no
+(summary(EGR.TadWtStart.Sp.lm<-lm(EGRperM.2[Sp]~TadWtStart[Sp])))##Total weight of tadpoles at start of treatments predicts EGR (p=.04812), but little variation is accounted for (adj rsq=.0585)
+
+(summary(EGR.TadWtEnd.LC.lm<-lm(EGRperM.2[LC]~TadWtEnd[LC])))##no
+(summary(EGR.TadWtEnd.Sp.lm<-lm(EGRperM.2[Sp]~TadWtEnd[Sp])))##p=.0394, adj rsq=.065
+
+(summary(EGR.TadWtChange.LC.lm<-lm(EGRperM.2[LC]~TadWtChange[LC])))##no
+(summary(EGR.TadWtChange.Sp.lm<-lm(EGRperM.2[Sp]~TadWtChange[Sp])))##no
+
+
+
+####Effects of MF on EGR: Dens, Count, WtStart, WtEnd, WtChg
+
+NoTad<-which(TadDens==0)
+(summary(EGR.MFDens.LC.lm<-lm(EGRperM.2[LC]~MFDens[LC])))##in LeConte, p=1.71e-6, adj rsq=.36
+(summary(EGR.MFDens.Sp.lm<-lm(EGRperM.2[Sp]~MFDens[Sp])))## p=.363, adj-rsq=-.003127
+
+(summary(EGR.MFCount.LC.lm<-lm(EGRperM.2[LC]~MFCount[LC])))##p=1.51e-5, adj-rsq=.306
+(summary(EGR.MFCount.Sp.lm<-lm(EGRperM.2[Sp]~MFCount[Sp])))##p=.0287, adj-rsq=.0762
+
+(summary(EGR.MFBiomassStart.LC.lm<-lm(EGRperM.2[LC]~MFBiomassStart[LC])))##p=1.9e-05, adj-rsq=.3001
+(summary(EGR.MFBiomassStart.Sp.lm<-lm(EGRperM.2[Sp]~MFBiomassStart[Sp])))##p=.563, adj-rsq=-.0134
+
+(summary(EGR.MFBiomassEnd.LC.lm<-lm(EGRperM.2[LC]~MFBiomassEnd[LC])))##p=5.71e-5, adj-rsq=.2692
+(summary(EGR.MFBiomassEnd.Sp.lm<-lm(EGRperM.2[Sp]~MFBiomassEnd[Sp])))##p=.0395, adj-rsq=.065
+
+(summary(EGR.MFBiomassChange.LC.lm<-lm(EGRperM.2[LC]~MFBiomassChange[LC])))##p=.0697, adj-rsq=.0465
+(summary(EGR.MFBiomassChange.Sp.lm<-lm(EGRperM.2[Sp]~MFBiomassChange[Sp])))##p=.970, adj-rsq=-0.0204
+

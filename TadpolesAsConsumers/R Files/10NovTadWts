@@ -1,0 +1,35 @@
+TadWts<-read.csv(file.choose(), header=TRUE, na.strings="NA")
+Large<-read.csv(file.choose(), header=TRUE, na.strings="NA")
+WildTadWts<-read.csv(file.choose(), header=TRUE, na.strings="NA")
+CageTadWts<-read.csv(file.choose(), header=TRUE, na.strings="NA")
+
+
+L1<-which(Large$LakeID==10102)
+L2<-which(Large$LakeID==10475)
+
+par(mfrow=c(1,2))
+
+plot(CumTadWtWet[L1], AGRperM.2[L1])
+M1.AvCumTadWtlm<-lm(AGRperM.2[L1]~CumTadWtWet[L1], data=Large)
+summary(M1.AvCumTadWtlm)
+abline(M1.AvCumTadWtlm)
+plot(CumTadWtWet[L2], AGRperM.2[L2])
+M2.AvCumTadWtlm<-lm(AGRperM.2[L2]~CumTadWtWet[L2], data=Large)
+summary(M2.AvCumTadWtlm)
+abline(M2.AvCumTadWtlm)
+
+##This is sort of irrelevant
+TWtperDay<-CumTadWtWet/DaysSinPrevSamp
+plot(TadDens[L1]-.5, TWtperDay[L1], xlim=c(-1, 21))
+points(TadDens[L2]+.5, TWtperDay[L2], col="blue")
+
+par(mfrow=c(1,2))
+plot(SampleDate[L1], TWtperDay[L1], ylim=c(0,4))
+plot(SampleDate[L2], TWtperDay[L2], ylim=c(0,4))
+
+L3<-which(WildTadWts$LakeID==10102)
+L4<-which(WildTadWts$LakeID==10475)
+L5<-which(WildTadWts$LakeID==10475)
+
+plot(WildTadWts$SampleDate[L4], WildTadWts$TadpoleWeight[L4], ylim=c(0,4))
+plot(CageTadWts$CageNumber[L5], CageTadWts$TadpoleWeight[L5], ylim=c(0,4))

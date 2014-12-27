@@ -1,0 +1,15 @@
+Script: Two Way Anova of AFDM against TadDens, MFDens, 
+
+Large<-read.csv("G:\\Consumer-Resource Experiment 2009\\LargeTableNoControls_10Nov.csv", header=T)
+names(Large)
+ [1] "LakeID"          "SampleDate"      "CageID"          "Tx"             
+ [5] "AlgWeight"       "DaysSinPrevSamp" "AlgWtperM.2"     "AlgGroRate"     
+ [9] "AGRperM.2"       "TadDens"         "ActTadDens"      "CumTadWtWet"    
+[13] "EstCumTadWtDry"  "MFDens"          "ActMFDens"       "EstMFWeight" 
+str(Large)
+attach(Large)
+rm(list=ls())
+as(LakeID, "factor")
+as(CageID, "factor")
+as(TadDens, "factor")
+as(MFDens, "factor")

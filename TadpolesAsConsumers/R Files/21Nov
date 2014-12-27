@@ -1,0 +1,23 @@
+MFLM<-read.csv(file.choose(), header=T)
+head(MFLM)
+str(MFLM)
+attach(MFLM)
+
+plot(length, AFDM)
+abline(lm(AFDM~length, date=MFLM))
+LMlm<-lm(AFDM~length, data=MFLM)
+LMlm
+
+Aug.1<-which(MFLM$date=="1-Aug")
+Aug.24<-which(MFLM$date=="24-Aug")
+
+plot(length[Aug.1], AFDM[Aug.1])
+points(length[Aug.24], AFDM[Aug.24], pch=5, col="blue")
+abline(lm(AFDM[Aug.1]~length[Aug.1], data=MFLM))
+abline(lm(AFDM[Aug.24]~length[Aug.24], data=MFLM), col="blue")
+
+Aug.1.lm<-lm(AFDM[Aug.1]~length[Aug.1], data=MFLM)
+Aug.1.lm
+
+Aug.24.lm<-lm(AFDM[Aug.24]~length[Aug.24], data=MFLM)
+Aug.24.lm

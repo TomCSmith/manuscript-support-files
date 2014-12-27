@@ -1,0 +1,297 @@
+detach()
+rm(list=ls())
+
+
+LargeCR<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+LargeCR<-read.csv(file.choose(), header=T, na.strings="na")
+LargeCR<-read.csv("G:\\Consumer-Resource Experiment 2009\\LargeCRAnalysis_13Feb10.csv", header=T, na.strings="na")
+
+str(LargeCR)
+attach(LargeCR)
+names(LargeCR)
+
+ [1] "LakeID"           "LakeName"         "SampleDate"       "SampleNumber"    
+ [5] "CageOrder."       "CageID"           "EpiAFDM"          "SamplePeriod"    
+ [9] "EpiWtperM.2"      "EpiGroRate"       "EGRperM.2"        "CtrlDiff"        
+[13] "TadDens"          "TotTadWtMsrdCage" "TadWtStart"       "TadWtEnd"        
+[17] "TadWtChange"      "MFCount"          "MFDens"           "MFDensChg"       
+[21] "MFPropChg"        "MFBiomassStart"   "MFBiomassEnd"     "MFBiomassChange" 
+[25] "meanSampleTemp"   "totalSampleTemp"  "light"            "PctBoulder"      
+[29] "PctCobble"        "PctGravel"        "PctSand"          "PctSilt"         
+[33] "PctBedrock"       "elevation"   
+
+
+LargeCR$CageIDF<-as.factor(LargeCR$CageID)
+LargeCR$elevationF<-as.factor(LargeCR$elevation)
+
+####Exploratory graphics
+LC<-which(LakeID==10102)
+Sp<-which(LakeID==10475)
+
+par(mfrow=c(3,2))
+plot(MFBiomassEnd[Sp],(EGRperM.2[Sp]), col=1, ylim=c(0,.8))
+plot(TadWtEnd[Sp],(EGRperM.2[Sp]), col=4, ylim=c(0,.8))
+plot(MFBiomassStart[Sp],(EGRperM.2[Sp]), col=1, ylim=c(0,.8))
+plot(TadWtStart[Sp],(EGRperM.2[Sp]), col=4, ylim=c(0,.8))
+plot(MFBiomassChange[Sp], (EGRperM.2[Sp]), col=1, ylim=c(0,.8))
+plot(TadWtChange[Sp], (EGRperM.2[Sp]), col=4, ylim=c(0,.8))
+
+plot(MFBiomassEnd[LC],(EGRperM.2[LC]), col=1, ylim=c(0,.05))
+plot(TadWtEnd[LC],(EGRperM.2[LC]), col=4, ylim=c(0,.05))
+plot(MFBiomassStart[LC],(EGRperM.2[LC]), col=1, ylim=c(0,.05))
+plot(TadWtStart[LC],(EGRperM.2[LC]), col=4, ylim=c(0,.05))
+plot(MFBiomassChange[LC], (EGRperM.2[LC]), col=1, ylim=c(0,.05))
+plot(TadWtChange[LC], (EGRperM.2[LC]), col=4,ylim=c(0,.05))
+
+par(mfrow=c(1,3))
+plot(MFBiomassChange, TadWtChange)
+plot(elevationF, log(EGRperM.2))
+plot(light, log(EGRperM.2))
+
+LC<-which(LakeID==10102)
+Sp<-which(LakeID==10475)
+
+par(mfrow=c(1,1))
+plot(CageOrder.F[LC],EGRperM.2[LC], ylim=c(0,0.05))
+points(CageOrder.F[LC], MFDens[LC]/10000, pch=15, col=4)
+points(CageOrder.F[LC], TadDens[LC]/1000, pch=19, col=2)
+
+plot(CageOrder.F[Sp],EGRperM.2[Sp], ylim=c(0,0.7))
+points(CageOrder.F[Sp], MFDens[Sp]/1000, pch=15, col=4)
+points(CageOrder.F[Sp], TadDens[Sp]/100, pch=19, col=2)
+
+names(LargeCR)
+LargeCR$CageOrder.F<-as.factor(LargeCR$CageOrder.)
+attach(LargeCR)
+
+####basic linear model, by lake and consumer
+##Y = AFDM
+##X1 = TadDens
+##X2 = MFDens
+
+par(mfrow=c(2,1))
+
+##LM LeConte
+plot(TadDens[LC], EpiAFDM[LC])
+(BasicLM.LC.Tad<-lm(EpiAFDM[LC]~TadDens[LC]))
+summary(BasicLM.LC.Tad)
+abline(BasicLM.LC.Tad)
+plot(MFDens[LC], EpiAFDM[LC])
+(BasicLM.LC.MF<-lm(EpiAFDM[LC]~MFDens[LC]))
+summary(BasicLM.LC.MF)
+abline(BasicLM.LC.MF)
+plot(resid(BasicLM.LC.Tad))
+abline(0,0)
+plot(resid(BasicLM.LC.MF))
+abline(0,0)
+##residuals look OK,
+
+##LM Spur
+plot(TadDens[Sp], EpiAFDM[Sp])
+(BasicLM.Sp.Tad<-lm(EpiAFDM[Sp]~TadDens[Sp]))
+summary(BasicLM.Sp.Tad)
+abline(BasicLM.Sp.Tad)
+plot(MFDens[Sp], EpiAFDM[Sp])
+(BasicLM.Sp.MF<-lm(EpiAFDM[Sp]~MFDens[Sp]))
+summary(BasicLM.Sp.MF)
+abline(BasicLM.Sp.MF)
+plot(resid(BasicLM.Sp.Tad))
+abline(0,0)
+plot(resid(BasicLM.Sp.MF))
+abline(0,0)
+
+
+LM.LC.EpiGR.delBM<-lm(EGRperM.2 ~ TadWtChange + MFBiomassChange)
+summary(LM.LC.EpiGR.delBM)
+
+LM.LC.EpiGR.delBM<-lm(EGRperM.2 ~ TadWtStart + MFBiomassStart)
+summary(LM.LC.EpiGR.delBM)
+
+
+
+
+
+
+####Linear Mixed Effects Model - Random intercept model
+## E = alpha + Beta1*T + Beta2*M + Beta3*Lake + error
+library(nlme)
+ASDS2.Exp<-which(SampleNumber=="S2" &(CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASDS3.Exp<-which(SampleNumber=="S3"&(CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASDS4.Exp<-which(SampleNumber=="S4" & (CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASD.Exp<-c(ASDS2.Exp, ASDS3.Exp, ASDS4.Exp)
+ASD.Exp
+length(EGRperM.2[ASD.Exp])
+length(TadWtStart[ASD.Exp])
+length(MFBiomassStart[ASD.Exp])
+length(LakeName[ASD.Exp])
+
+
+##Epi Growth Rate per sq-M, Change in consumer biomasses; Random effect of Lake
+EpiGrowth.lme1<-lme(EGRperM.2 ~ TadWtChange + MFBiomassChange, random = ~1|LakeName, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme1)
+##Epi Growth Rate per sq-M, Ending consumer biomasses; Random effect of Lake
+EpiGrowth.lme2<-lme(EGRperM.2 ~ TadWtEnd + MFBiomassEnd, random = ~1|LakeName, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme2)
+##Epi Growth Rate per sq-M, Starting consumer densities; Random effect of Lake
+EpiGrowth.lme3<-lme(EGRperM.2 ~ TadDens + MFDens, random = ~1|LakeName, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme3)
+##Epi Growth Rate per sq-M, Starting consumer densities; Random effect of Lake, SampleNumber
+EpiGrowth.lme4<-lme(EGRperM.2 ~ TadDens + MFDens, random = ~1|LakeName/SampleDate, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme4)
+##Epi Growth Rate per sq-M, Starting consumer densities; Random effects of Lake, SampleNumber, CageNumber
+EpiGrowth.lme5<-lme(EGRperM.2 ~ TadDens + MFDens, random = ~1|LakeName/SampleDate/CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme5)
+##Epi Growth Rate per sq-M, Starting consumer densities; Random effects of CageNumber
+EpiGrowth.lme6<-lme(EGRperM.2 ~ TadDens + MFDens, random = ~1|CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme6)
+##Epi Growth Rate per sq-M, Starting consumer densities; Random effects of CageNumber, SampleDate
+EpiGrowth.lme7<-lme(EGRperM.2 ~ TadDens + MFDens, random = ~1|SampleDate/CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme7)
+##Epi Growth Rate per sq-M, Starting consumer densities CageNumber, SampleDate, LakeIDm, no random effects;
+EpiGrowth.lme8<-lm(EGRperM.2 ~ TadDens + MFDens + LakeName + SampleDate + CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme8)
+##Epi Growth Rate per sq-M, Starting consumer densities SampleDate, CageID , m; LakeIDas random effects;
+EpiGrowth.lme9<-lme(EGRperM.2 ~ TadDens + MFDens + CageID + SampleDate, random=~1|LakeID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme9)
+##Epi Growth Rate per sq-M, Starting consumer densities + CageID; SampleDate, LakeID, as random effects;
+EpiGrowth.lme10<-lme(EGRperM.2 ~ TadDens + MFDens + CageID, random=~1|LakeID/SampleDate, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.lme10)
+##Epi Growth Rate as a result of all random effects LakeID, Date, CageNumber;
+##in summary, so far, I get lowest AIC (but low-likelihood) with CageID and Sample Date as fixed efx and LakeID as a random effect, but with no significant effects of any one cage on its EpiGrowthRate
+##but this makes sense b/c of # of parameters associated with CageID.
+##should stick with LakeID as fixed and date and cage as random. Then compare types of models (random intercept and slope...)
+##So the model below is best model with Lake fixed and SampleDate and CageID as nested random variables
+
+*****
+##random intercept
+##Epi Growth Rate per sq-M, Starting consumer densities SampleDate, CageID , m; LakeIDas random effects;
+EpiGrowth.RI.lme9<-lme(EGRperM.2 ~ TadDens + MFDens+LakeID, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.Exp)##lowest AIC of all logical models, and contains a weak negative effect of tad on epigrowth and a weak negative interaction of tad and MF
+summary(EpiGrowth.RI.lme9)
+plot(EpiGrowth.RI.lme9)
+*****
+
+
+####random intercept and slope model
+EpiGrowth.RIS.lme<-lme(EGRperM.2 ~ MFCounted, random=~1+MFCounted|CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.RIS.lme)
+##no convergence of any combination of predictor and fixed/random variables.
+
+####Random effects model
+EpiGrowth.RFx.lme1<-lme(EGRperM.2 ~ 1, random=~1|LakeID/SampleDate/CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.RFx.lme1)
+EpiGrowth.RFx.lme2<-lme(EGRperM.2 ~ 1, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.RFx.lme2)
+EpiGrowth.RFx.lme3<-lme(EGRperM.2 ~ 1, random=~1|CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.RFx.lme3)##best of the random effects models,  but still not as good as the random intercept model
+EpiGrowth.RFx.lme4<-lme(EGRperM.2 ~ 1, random=~1|LakeID/CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.RFx.lme4)
+plot(EpiGrowth.RFx.lme3)##Check out this plot - residuals increase with fitted values.
+
+
+##Epi Growth Rate per sq-M, Starting consumer densities with interaction, LakeID as fixed effects;, CageID as random effect
+EpiGrowth.RI.lme11<-lme(EGRperM.2 ~ TadDens+MFDens+TadDens*MFDens+LakeID,random=~1|CageID, data=LargeCR, subset=ASD.Exp)##maybe best model so far - fixed 'direct' interaction between Tad and MF with lake as fixed and cage as random, though interaction is not significant
+summary(EpiGrowth.RI.lme11)
+plot(EpiGrowth.RI.lme11)
+plot(resid(EpiGrowth.RI.lme11))
+abline(0,0)
+
+##Epi Growth Rate per sq-M, Starting consumer densities , LakeID as fixed effects;, CageID as random effect
+EpiGrowth.RI.lme12<-lme(EGRperM.2 ~ TadDens+MFDens+LakeID,random=~1|CageID, data=LargeCR, subset=ASD.Exp)##Lake is significant but has a very small positive, interaction; tadpole keeps coming out almost significant with a small negative effect
+summary(EpiGrowth.RI.lme12)
+plot(EpiGrowth.RI.lme12)
+
+##Epi Growth Rate per sq-M, Starting consumer densities , LakeID as fixed effects;, CageID as random effect
+EpiGrowth.RI.lme12<-lme(EGRperM.2 ~ TadDens+MFDens+LakeID,random=~1|CageID, data=LargeCR, subset=ASD.Exp)##Lake is significant but has a very small positive, interaction; tadpole keeps coming out almost significant with a small negative effect
+summary(EpiGrowth.RI.lme12)
+plot(EpiGrowth.RI.lme12)
+
+####ANOVA
+par(mfrow=c(2,3))
+Sp.S2<-which(LakeID==10475 & SampleNumber=="S2")
+Sp.S3<-which(LakeID==10475 & SampleNumber=="S3")
+Sp.S4<-which(LakeID==10475 & SampleNumber=="S4")
+LC.S2<-which(LakeID==10102 & SampleNumber=="S2")
+LC.S3<-which(LakeID==10102 & SampleNumber=="S3")
+LC.S4<-which(LakeID==10102 & SampleNumber=="S4")
+barplot(tapply(EGRperM.2[ASD.Exp],list(TadDens[ASD.Exp], MFDens[ASD.Exp]), mean), ylim=c(0,.25), beside=T,col=rainbow(4), ylab="Epiphyton Daily Growth per Sq. m")
+
+barplot(tapply(EGRperM.2[Sp.S2],list(TadDens[Sp.S2], MFDens[Sp.S2]), mean), ylim=c(0,.8), beside=T,col=rainbow(4), ylab="Epiphyton Daily Growth per Sq. m")
+barplot(tapply(EGRperM.2[Sp.S3],list(TadDens[Sp.S3], MFDens[Sp.S3]), mean), ylim=c(0,.8), beside=T,col=rainbow(4), xlab="Ephemeroptera Density")
+barplot(tapply(EGRperM.2[Sp.S4],list(TadDens[Sp.S4], MFDens[Sp.S4]), mean), ylim=c(0,.8), beside=T,col=rainbow(4))
+barplot(tapply(EGRperM.2[LC.S2],list(TadDens[LC.S2], MFDens[LC.S2]), mean), ylim=c(0,.05), beside=T,col=rainbow(4), ylab="Epiphyton Daily Growth per Sq. m")
+barplot(tapply(EGRperM.2[LC.S3],list(TadDens[LC.S3], MFDens[LC.S3]), mean), ylim=c(0,.05), beside=T,col=rainbow(4), xlab="Ephemeroptera Density")
+barplot(tapply(EGRperM.2[LC.S4],list(TadDens[LC.S4], MFDens[LC.S4]), mean), ylim=c(0,.05), beside=T,col=rainbow(4))
+AOV.EpiGrowth.Sp.S2<-aov(EGRperM.2[Sp.S2]~TadDens[Sp.S2]*MFDens[Sp.S2])
+summary(AOV.EpiGrowth.Sp.S2)
+AOV.EpiGrowth.Sp.S3<-aov(EGRperM.2[Sp.S3]~TadDens[Sp.S3]*MFDens[Sp.S3])
+summary(AOV.EpiGrowth.Sp.S3)
+AOV.EpiGrowth.Sp.S4<-aov(EGRperM.2[Sp.S4]~TadDens[Sp.S4]*MFDens[Sp.S4])
+summary(AOV.EpiGrowth.Sp.S4)
+AOV.EpiGrowth.LC.S2<-aov(EGRperM.2[LC.S2]~TadDens[LC.S2]*MFDens[LC.S2])
+summary(AOV.EpiGrowth.LC.S2)
+AOV.EpiGrowth.LC.S3<-aov(EGRperM.2[LC.S3]~TadDens[LC.S3]*MFDens[LC.S3])
+summary(AOV.EpiGrowth.LC.S3)
+AOV.EpiGrowth.LC.S4<-aov(EGRperM.2[LC.S4]~TadDens[LC.S4]*MFDens[LC.S4])
+summary(AOV.EpiGrowth.LC.S4)
+
+lm.EpiGrowth.Sp.S2<-lm(EGRperM.2[Sp.S2]~TadDens[Sp.S2]*MFDens[Sp.S2])
+summary(lm.EpiGrowth.Sp.S2)
+lm.EpiGrowth.Sp.S3<-lm(EGRperM.2[Sp.S3]~TadDens[Sp.S3]*MFDens[Sp.S3])
+summary(lm.EpiGrowth.Sp.S3)
+lm.EpiGrowth.Sp.S4<-lm(EGRperM.2[Sp.S4]~TadDens[Sp.S4]*MFDens[Sp.S4])
+summary(lm.EpiGrowth.Sp.S4)
+lm.EpiGrowth.LC.S2<-lm(EGRperM.2[LC.S2]~TadDens[LC.S2]+MFDens[LC.S2])
+summary(lm.EpiGrowth.LC.S2)
+lm.EpiGrowth.LC.S3<-lm(EGRperM.2[LC.S3]~TadDens[LC.S3]+MFDens[LC.S3])
+summary(lm.EpiGrowth.LC.S3)
+lm.EpiGrowth.LC.S4<-lm(EGRperM.2[LC.S4]~TadDens[LC.S4]+MFDens[LC.S4])
+summary(lm.EpiGrowth.LC.S4)
+par(mfrow=c(1,1))
+plot(lm.EpiGrowth.Sp.S2)
+plot(resid(lm.EpiGrowth.LC.S4))
+
+####30Apr: random intercept model with consumer interaction
+library(nlme)
+ASDS2.Exp<-which(SampleNumber=="S2" &(CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASDS3.Exp<-which(SampleNumber=="S3"&(CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASDS4.Exp<-which(SampleNumber=="S4" & (CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASD.Exp<-c(ASDS2.Exp, ASDS3.Exp, ASDS4.Exp)
+ASD.Exp
+length(EGRperM.2[ASD.Exp])
+length(TadDens[ASD.Exp])
+length(MFDens[ASD.Exp])
+length(LakeName[ASD.Exp])
+
+EpiGrowth.RI.ConsInt.lme<-lme(EGRperM.2 ~ TadDens + MFDens + TadDens*MFDens + LakeID, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.Exp)
+summary(EpiGrowth.RI.ConsInt.lme)
+***AIC: -49, LL: 32
+
+plot(EpiGrowth.RI.ConsInt.lme)
+
+*****
+random intercept model without and with consumer interaction for LeConte only, where intraspecific effects are evident. removes LakeID as a fixed effect
+ASDS2.LC.Exp<-which(LakeID==10102 & SampleNumber=="S2" &(CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASDS3.LC.Exp<-which(LakeID==10102 & SampleNumber=="S3"&(CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASDS4.LC.Exp<-which(LakeID==10102 & SampleNumber=="S4" & (CageID==1|CageID==2|CageID==3|CageID==4|CageID==5|CageID==6|CageID==7|CageID==8|CageID==9|CageID==10|CageID==11|CageID==12|CageID==13|CageID==14|CageID==15|CageID==16|CageID==17))
+ASD.LC.Exp<-c(ASDS2.LC.Exp, ASDS3.LC.Exp, ASDS4.LC.Exp)
+ASD.LC.Exp
+
+####TadDens
+EpiGrowth.RI.ConsInt.LC.lme1<-lme(EGRperM.2 ~ TadDens, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.LC.Exp)
+summary(EpiGrowth.RI.ConsInt.LC.lme1)
+***AIC: -300, LL: 155
+####MFDens
+EpiGrowth.RI.ConsInt.LC.lme2<-lme(EGRperM.2 ~ MFDens, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.LC.Exp)
+summary(EpiGrowth.RI.ConsInt.LC.lme2)
+***AIC: -318, LL: 164 ***This is the best model for LeConte, using just MFDens to determine EpiPhyton Growth, as expected from plots
+***
+####TadDens and MFDens with no interaction
+EpiGrowth.RI.ConsInt.LC.lme3<-lme(EGRperM.2 ~ TadDens + MFDens, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.LC.Exp)
+summary(EpiGrowth.RI.ConsInt.LC.lme3)
+***AIC: -300, LL: 156
+####Interaction of TadDens and MFDens
+EpiGrowth.RI.ConsInt.LC.lme4<-lme(EGRperM.2 ~ TadDens + MFDens + TadDens*MFDens, random=~1|SampleDate/CageID, data=LargeCR, subset=ASD.LC.Exp)
+summary(EpiGrowth.RI.ConsInt.LC.lme4)
+***AIC: -273, LL:143
+
+plot(EpiGrowth.RI.ConsInt.LC.lme2)

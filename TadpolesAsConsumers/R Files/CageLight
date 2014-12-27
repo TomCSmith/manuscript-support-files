@@ -1,0 +1,8 @@
+detach()
+rm(list=ls())
+
+CageLight<-read.csv("C:\\Users\\thsmith\\Desktop\\ConsumerResourceExperiment2009\\CageLight.csv", header=T)
+attach(CageLight)
+str(CageLight)
+plot(Light~LtLoc)
+summary(aov(Light~LtLoc))

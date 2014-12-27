@@ -1,0 +1,17 @@
+rm(list=ls())
+detach()
+
+TadBL<-read.csv("C:\\Users\\thsmith\\Desktop\\TadBL18Aug.csv")
+attach(TadBL)
+str(TadBL)
+names(TadBL)  ##TankNumber"  "BdExposure"  "MeasuredBy"  "AnimalID"    "BL"  "GosnerStage"##
+TankNumberF<-as.factor(TankNumber)
+plot(TankNumberF, BL)
+
+TadBL.aov<-aov(BL~TankNumber)
+summary(TadBL.aov)
+
+library(nlme)
+TadBL.lm2<-lme(BL ~ BdExposure, random = ~1|MeasuredBy/AnimalID, data=TadBL)
+TadBL.lm2
+summary(TadBL.lm2)

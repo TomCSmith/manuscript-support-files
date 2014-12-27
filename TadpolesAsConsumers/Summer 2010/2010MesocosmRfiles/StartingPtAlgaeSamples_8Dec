@@ -1,0 +1,12 @@
+detach()
+rm(list=ls())
+
+SPA<-read.csv("C:\\Users\\thsmith\\Desktop\\2010MesocosmCSVdata\\StartingPtAlgaeSamples.csv", header=T)
+str(SPA)
+attach(SPA)
+TileF<-as.factor(TileNumber)
+TankF<-as.factor(TankNumber)
+
+plot(TankNumber, AFDM)
+plot(TankF, AFDM, main="algal standing stock at end of 3 month 'conditioning' period", xlab="Mesocosm #", ylab="g AFDM")
+

@@ -1,0 +1,23 @@
+LakeTemp<-read.csv(C:\Users\thsmith\Desktop\ConsumerResourceExperiment2009\DailyLakeTemps)
+LakeTemp<-read.csv(file.choose(), header=TRUE)
+
+attach(LakeTemp)
+
+
+
+LC<-which(LakeTemp$LakeID==10102)
+Sp<-which(LakeTemp$LakeID==10475)
+
+plot(ExpDate[LC], TempAvg[LC], type="l", xlim=c(1,70), ylim=c(10,17), integrand)
+points(ExpDate[Sp], TempAvg[Sp], type="l", col="blue")
+
+LakeTemp$DD<-gl(1,121, labels=c("4"))
+LakeTemp$DDn<-as(LakeTemp$DD, "numeric")
+(LakeTemp$DDx<-LakeTemp$TempAvg-4)
+DDsum<-sum(LakeTemp$DDx[1]:LakeTemp$DDx[10])
+
+v1<-which(ExpDate<10)
+v2<-which(ExpDate>9 & ExpDate<20)
+sum(LakeTemp$DDx[v1])
+
+##need to apply additional vectors defined by subscripts for lakes, so vector v1, v2 do not include data for one ExpDate from both lakes...

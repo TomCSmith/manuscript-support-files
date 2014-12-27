@@ -1,0 +1,26 @@
+LCAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10102AWBD.csv", header=T)
+
+par(mfrow=c(1,2))
+
+plot(LCAWBD$TadDens,LCAWBD$LeConte2Aug)
+
+M0<-which(LCAWBD$MFDens==0)
+M25<-which(LCAWBD$MFDens==25)
+M125<-which(LCAWBD$MFDens==125)
+M250<-which(LCAWBD$MFDens==250)
+lines(LCAWBD$TadDens[M0],LCAWBD$LeConte2Aug[M0], col="red") 
+lines(LCAWBD$TadDens[M25],LCAWBD$LeConte2Aug[M25],col="blue") 
+lines(LCAWBD$TadDens[M125],LCAWBD$LeConte2Aug[M125], col="green") 
+lines(LCAWBD$TadDens[M250],LCAWBD$LeConte2Aug[M250], col="black") 
+
+
+plot(LCAWBD$MFDens, LCAWBD$LeConte2Aug)
+
+T0<-which(LCAWBD$TadDens==0)
+T2<-which(LCAWBD$TadDens==2)
+T10<-which(LCAWBD$TadDens==10)
+T20<-which(LCAWBD$TadDens==20)
+lines(LCAWBD$MFDens[T0],LCAWBD$LeConte2Aug[T0], col="red")
+lines(LCAWBD$MFDens[T2],LCAWBD$LeConte2Aug[T2], col="blue")
+lines(LCAWBD$MFDens[T10],LCAWBD$LeConte2Aug[T10], col="green")
+lines(LCAWBD$MFDens[T20],LCAWBD$LeConte2Aug[T20], col="black")

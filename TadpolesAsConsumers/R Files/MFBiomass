@@ -1,0 +1,226 @@
+##clear old data frames, vectors, etc
+rm(list=ls())
+detach(MFBiomass)
+
+##load Mayfly Biomass Data frame
+MFBiomass<-read.csv("G:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+attach(MFBiomass)
+names(MFBiomass)
+## [1] "ID"         "LakeID"     "SampleDate" "Cage."      "GenusSpp"  
+## [6] "MFLength"   "FoilWt"     "DryWt"      "AshMass"    "AFDM"  
+
+
+##AFDM = a + L*b
+par(mfrow=c(1,2))
+MFLM<-lm(AFDM~MFLength, data=MFBiomass)
+plot(MFLength, AFDM)
+abline(MFLM)
+plot(MFLength, log(AFDM))
+MFLM
+plot(resid(MFLM))
+
+
+##AFDM = a * L^b
+
+
+## tests for differences are below
+
+##
+## difference between species
+##
+MF.C<-which(GenusSpp=="Callibaetis" & Cage.==0)
+MF.A<-which(GenusSpp=="Ameletus" & Cage.==0)
+plot(MFLength[MF.C], AFDM[MF.C], col="black")
+points(MFLength[MF.A], AFDM[MF.A], col="red")
+MFLM.C<-lm(AFDM[MF.C]~MFLength[MF.C], data=MFBiomass)
+MFLM.A<-lm(AFDM[MF.A]~MFLength[MF.A], data=MFBiomass)
+summary(MFLM.C)
+summary(MFLM.A)
+abline(MFLM.C, col="black")
+abline(MFLM.A, col="red")
+plot(resid(MFLM.C), col="black")
+points(resid(MFLM.A), col="red")
+
+mean(AFDM[MF.A])
+mean(AFDM[MF.C])
+
+AFDM.C<-AFDM[MF.C]
+AFDM.A<-AFDM[MF.A]
+
+
+sapply(list(AFDM.C, AFDM.A), mean)
+sapply(list(AFDM.C, AFDM.A), var)
+
+##AFDM.AC<-c(AFDM.C, AFDM.A)
+##fligner.test(AFDM.AC~AFDM)
+
+plot(GenusSpp,AFDM,  names=c("Ameletus", "Callibaetis"), ylab="AFDM")
+
+GenusSppF<-as.factor(GenusSpp)
+
+summary(aov(AFDM~GenusSpp))
+qf(.95,1,351)
+
+par(mfrow=c(2,2))
+plot(aov(AFDM~GenusSpp))
+
+
+##
+## difference between sites
+##
+
+detach(MFBiomass)
+MFBiomass<-read.csv("G:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+attach(MFBiomass)
+names(MFBiomass)
+
+MFBiomass$LakeIDF<-as.factor(LakeID)
+
+par(mfrow=c(1,2))
+
+MF.Sp.C<-which(LakeID=="10475" & GenusSpp=="Callibaetis" & Cage.==0)
+MF.LC.C<-which(LakeID=="10102" & GenusSpp=="Callibaetis" & Cage.==0)##only one individual, so cannot compare difference in Callibaetis between two lakes.
+plot(MFLength[MF.Sp.C], AFDM[MF.Sp.C], col="black")
+points(MFLength[MF.LC.C], AFDM[MF.LC.C], col="red")
+MFLM.Sp.C<-lm(AFDM[MF.Sp.C]~MFLength[MF.Sp.C], data=MFBiomass)
+##MFLM.LC.C<-lm(AFDM[MF.LC.C]~MFLength[MF.LC.C], data=MFBiomass)
+summary(MFLM.Sp.C)
+##summary(MFLM.LC.C)
+abline(MFLM.Sp.C, col="black")
+##abline(MFLM.LC.C, col="red")
+plot(resid(MFLM.Sp.C), col="black")
+##points(resid(MFLM.LC.C), col="red")
+
+detach(MFBiomass)
+MFBiomass<-read.csv("G:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+attach(MFBiomass)
+names(MFBiomass)
+
+MF.Sp.A<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0)
+MF.LC.A<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0)
+plot(MFLength[MF.Sp.A], AFDM[MF.Sp.A], col="black")
+points(MFLength[MF.LC.A], AFDM[MF.LC.A], col="red")
+MFLM.Sp<-lm(AFDM[MF.Sp.A]~MFLength[MF.Sp.A], data=MFBiomass)
+MFLM.LC<-lm(AFDM[MF.LC.A]~MFLength[MF.LC.A], data=MFBiomass)
+summary(MFLM.Sp.A)
+summary(MFLM.LC.A)
+abline(MFLM.Sp.A, col="black")
+abline(MFLM.LC.A, col="red")
+plot(resid(MFLM.Sp.A), col="black")
+points(resid(MFLM.LC.A), col="red")
+
+summary(aov(AFDM~LakeID+GenusSpp))
+qf(.95,1,351)
+par(mfrow=c(2,2))
+plot(aov(AFDM~GenusSpp))
+
+##
+## difference between dates within site
+##
+detach(MFBiomass)
+MFBiomass<-read.csv("H:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+attach(MFBiomass)
+names(MFBiomass)
+
+##10102_Ameletus
+MF.LC.A.S1<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="15-Jul-09")
+MF.LC.A.S2<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="1-Aug-09")
+MF.LC.A.S3<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="24-Aug-09")
+MF.LC.A.S4<-which(LakeID=="10102" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="12-Sep-09")
+
+plot(MFLength[MF.LC.A.S1], AFDM[MF.LC.A.S1], col="black")
+points(MFLength[MF.LC.A.S2], AFDM[MF.LC.A.S2], col="red")
+points(MFLength[MF.LC.A.S3], AFDM[MF.LC.A.S3], col="blue")
+points(MFLength[MF.LC.A.S4], AFDM[MF.LC.A.S4], col="green")
+
+MFLM.LC.A.S1<-lm(AFDM[MF.LC.A.S1]~MFLength[MF.LC.A.S1], data=MFBiomass)
+MFLM.LC.A.S2<-lm(AFDM[MF.LC.A.S2]~MFLength[MF.LC.A.S2], data=MFBiomass)
+MFLM.LC.A.S3<-lm(AFDM[MF.LC.A.S3]~MFLength[MF.LC.A.S3], data=MFBiomass)
+MFLM.LC.A.S4<-lm(AFDM[MF.LC.A.S4]~MFLength[MF.LC.A.S4], data=MFBiomass)
+
+summary(MFLM.LC.A.S1)
+summary(MFLM.LC.A.S2)
+summary(MFLM.LC.A.S3)
+summary(MFLM.LC.A.S4)
+
+abline(MFLM.LC.A.S1, col="black")
+abline(MFLM.LC.A.S2, col="red")
+abline(MFLM.LC.A.S3, col="blue")
+abline(MFLM.LC.A.S4, col="green")
+
+par(mfrow=c(2,2))
+plot(resid(MFLM.LC.A.S1), col="black")
+plot(resid(MFLM.LC.A.S2), col="red")
+plot(resid(MFLM.LC.A.S3), col="blue")
+plot(resid(MFLM.LC.A.S4), col="green")
+
+##10475_Ameletus
+MF.Sp.A.S1<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="15-Jul-09")
+MF.Sp.A.S2<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="1-Aug-09")
+MF.Sp.A.S3<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="24-Aug-09")
+MF.Sp.A.S4<-which(LakeID=="10475" & GenusSpp=="Ameletus" & Cage.==0 & SampleDate=="12-Sep-09")
+
+****
+
+plot(MFLength[MF.LC.A.S1], AFDM[MF.LC.A.S1], col="black")
+points(MFLength[MF.LC.A.S2], AFDM[MF.LC.A.S2], col="red")
+points(MFLength[MF.LC.A.S3], AFDM[MF.LC.A.S3], col="blue")
+points(MFLength[MF.LC.A.S4], AFDM[MF.LC.A.S4], col="green")
+
+MFLM.LC.A.S1<-lm(AFDM[MF.LC.A.S1]~MFLength[MF.LC.A.S1], data=MFBiomass)
+MFLM.LC.A.S2<-lm(AFDM[MF.LC.A.S2]~MFLength[MF.LC.A.S2], data=MFBiomass)
+MFLM.LC.A.S3<-lm(AFDM[MF.LC.A.S3]~MFLength[MF.LC.A.S3], data=MFBiomass)
+MFLM.LC.A.S4<-lm(AFDM[MF.LC.A.S4]~MFLength[MF.LC.A.S4], data=MFBiomass)
+
+summary(MFLM.LC.A.S1)
+summary(MFLM.LC.A.S2)
+summary(MFLM.LC.A.S3)
+summary(MFLM.LC.A.S4)
+
+abline(MFLM.LC.A.S1, col="black")
+abline(MFLM.LC.A.S2, col="red")
+abline(MFLM.LC.A.S3, col="blue")
+abline(MFLM.LC.A.S4, col="green")
+
+par(mfrow=c(2,2))
+plot(resid(MFLM.LC.A.S1), col="black")
+plot(resid(MFLM.LC.A.S2), col="red")
+plot(resid(MFLM.LC.A.S3), col="blue")
+plot(resid(MFLM.LC.A.S4), col="green")
+
+
+
+
+summary(aov(AFDM~LakeID+GenusSpp+SampleDate))
+qf(.95,1,351)
+par(mfrow=c(2,2))
+plot(aov(AFDM~LakeID+GenusSpp+SampleDate))
+
+
+detach(MFBiomass)
+MFBiomass<-read.csv("H:\\Consumer-Resource Experiment 2009\\MFBiomass.csv", header=T)
+attach(MFBiomass)
+names(MFBiomass)
+
+MF.Sp.A<-which(LakeID=="10475" & GenusSpp=="Ameletus")
+MF.LC.A<-which(LakeID=="10102" & GenusSpp=="Ameletus")
+plot(MFLength[MF.Sp.A], AFDM[MF.Sp.A], col="black")
+points(MFLength[MF.LC.A], AFDM[MF.LC.A], col="red")
+MFLM.Sp<-lm(AFDM[MF.Sp.A]~MFLength[MF.Sp.A], data=MFBiomass)
+MFLM.LC<-lm(AFDM[MF.LC.A]~MFLength[MF.LC.A], data=MFBiomass)
+summary(MFLM.Sp.A)
+summary(MFLM.LC.A)
+abline(MFLM.Sp.A, col="black")
+abline(MFLM.LC.A, col="red")
+plot(resid(MFLM.Sp.A), col="black")
+points(resid(MFLM.LC.A), col="red")
+
+summary(aov(AFDM~LakeID+GenusSpp))
+qf(.95,1,351)
+par(mfrow=c(2,2))
+plot(aov(AFDM~GenusSpp))
+
+
+##
+##differnce between Cage and Wild MFs at Final date
+##

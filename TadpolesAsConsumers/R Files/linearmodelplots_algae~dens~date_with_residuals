@@ -1,0 +1,57 @@
+SpAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10475AWBDdate.csv", header=T)
+
+par(mfrow=c(2,2))
+
+plot(SpAWBD$MFDens, SpAWBD$AFDM.Alg, xlim=c(0,250))
+abline(lm(SpAWBD$AFDM.Alg~SpAWBD$MFDens))
+summary(lm(SpAWBD$AFDM.Alg~SpAWBD$MFDens))
+
+plot(SpAWBD$MFDens, SpAWBD$AFDM.Alg, xlim=c(0,250))
+abline(lm(SpAWBD$AFDM.Alg~SpAWBD$MFDens+SpAWBD$TadDens))
+summary(lm(SpAWBD$AFDM.Alg~SpAWBD$SampleDate+SpAWBD$MFDens+SpAWBD$TadDens))
+
+coplot(AFDM.Alg~TadDens | fSampleDate, data = SpAWBD)
+M0 <- lm(AFDM.Alg~TadDens * fSampleDate, data = SpAWBD)
+drop1(M0,test = "F")
+
+SpAWBD$LNAFDM.Alg <- log(SpAWBD$AFDM.Alg)
+SpAWBD$LNTadDens <- log(SpAWBD$TadDens+1)
+SpAWBD$fSampleDate <- factor(SpAWBD$SampleDate)
+library(lattice)
+coplot(SpAWBD$LNAFDM.Alg~SpAWBD$LNTadDens|SpAWBD$MFDens, data = SpAWBD)
+M1 <- lm(SpAWBD$LNAFDM.Alg~SpAWBD$MFDens, data = SpAWBD)
+drop1(M1,test = "F")
+
+op <- par(mfrow = c(2, 2), mar = c(5, 4, 1, 2))
+plot(M1, add.smooth = FALSE, which = 1)
+E <- resid(M1)
+hist(E, xlab = "Residuals", main = "")
+plot(SpAWBD$LNTadDens, E, xlab = "Log(TadDens)",
+ylab = "Residuals")
+plot(SpAWBD$fSampleDate, E, xlab = "SampleDate",
+ylab = "Residuals")
+par(op)
+
+TN <- TeethNitrogen
+M2 <- lm(X15N ~ Age, subset = (TN$Tooth == "Moby"),data = TN)
+op <- par(mfrow = c(2, 2))
+plot(M2, add.smooth = FALSE)
+par(op)
+
+
+
+
+SpAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10475AWBD.csv", header=T)
+
+
+plot(SpAWBD$TadDens, SpAWBD$Spur13Aug, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(SpAWBD$Spur13Aug~SpAWBD$TadDens))
+summary(lm(SpAWBD$Spur13Aug~SpAWBD$TadDens))
+
+plot(SpAWBD$TadDens, SpAWBD$Spur1Sep, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(SpAWBD$Spur1Sep~SpAWBD$TadDens))
+summary(lm(SpAWBD$Spur1Sep~SpAWBD$TadDens))
+
+plot(SpAWBD$TadDens, SpAWBD$Spur20Sep, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(SpAWBD$Spur20Sep~SpAWBD$TadDens))
+summary(lm(SpAWBD$Spur20Sep~SpAWBD$TadDens))

@@ -1,0 +1,36 @@
+LCAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10102AWBD.csv", header=T)
+
+par(mfrow=c(1,3))
+
+plot(LCAWBD$TadDens, LCAWBD$LeConte2Aug, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(LCAWBD$LeConte2Aug~LCAWBD$TadDens))
+summary(lm(LCAWBD$LeConte2Aug~LCAWBD$TadDens))
+
+plot(LCAWBD$TadDens, LCAWBD$LeConte24Aug, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(LCAWBD$LeConte24Aug~LCAWBD$TadDens))
+summary(lm(LCAWBD$LeConte24Aug~LCAWBD$TadDens))
+
+plot(LCAWBD$TadDens, LCAWBD$LeConte12Sep, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(LCAWBD$LeConte12Sep~LCAWBD$TadDens))
+summary(lm(LCAWBD$LeConte12Sep~LCAWBD$TadDens))
+
+
+
+
+SpAWBD<-read.csv("G:\\Consumer-Resource Experiment 2009\\10475AWBD.csv", header=T)
+
+
+par(mfrow=c(1,3))
+
+
+plot(SpAWBD$TadDens, SpAWBD$Spur13Aug, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(SpAWBD$Spur13Aug~SpAWBD$TadDens))
+summary(lm(SpAWBD$Spur13Aug~SpAWBD$TadDens))
+
+plot(SpAWBD$TadDens, SpAWBD$Spur1Sep, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(SpAWBD$Spur1Sep~SpAWBD$TadDens))
+summary(lm(SpAWBD$Spur1Sep~SpAWBD$TadDens))
+
+plot(SpAWBD$TadDens, SpAWBD$Spur20Sep, xlim=c(0,20),ylim=c(0,.004))
+abline(lm(SpAWBD$Spur20Sep~SpAWBD$TadDens))
+summary(lm(SpAWBD$Spur20Sep~SpAWBD$TadDens))

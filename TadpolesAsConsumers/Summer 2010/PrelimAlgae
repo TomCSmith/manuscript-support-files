@@ -1,0 +1,36 @@
+detach()
+rm(list=ls())
+
+PrelimAlgae<-read.csv("C:\\Users\\thsmith\\Desktop\\Summer 2010\\PrelimAlgae.csv")
+str(PrelimAlgae)
+attach(PrelimAlgae)
+PrelimAlgae$TankF<-as.factor(PrelimAlgae$TankNumber)
+NumDateF<-as.factor(NumDate)
+plot(NumDateF, AFDM)
+
+
+[1] "11-Jul-2010" "7-Jul-2010"  "8-Jul-2010"  "9-Jul-2010"
+
+##Date Subsets
+Jul11<-which(SampleDate=="11-Jul-2010")
+Jul7<-which(SampleDate=="7-Jul-2010")
+Jul8<-which(SampleDate=="8-Jul-2010")
+Jul9<-which(SampleDate=="9-Jul-2010")
+
+##Tank Subsets
+T4<-which(TankNumber==4)
+T7<-which(TankNumber==7)
+T11<-which(TankNumber==11)
+T13<-which(TankNumber==13)
+
+
+par(mfrow=c(2,2))
+plot(TankF[Jul7], AFDM [Jul7], ylim=c(0,.005))
+plot(TankF[Jul8], AFDM [Jul8], ylim=c(0,.005))
+plot(TankF[Jul9], AFDM [Jul9], ylim=c(0,.005))
+plot(TankF[Jul11], AFDM [Jul11], ylim=c(0,.005))
+
+plot(NumDate[T4], AFDM[T4], col=1, ylim=c(0, .005))
+points(NumDate[T7], AFDM[T7], col=3, pch=15)
+points(NumDate[T11], AFDM[T11], col=4, pch=17)
+points(NumDate[T13], AFDM[T13], col=2, pch=16)
